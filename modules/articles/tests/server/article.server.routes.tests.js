@@ -17,6 +17,7 @@ var app, agent, credentials, user, article;
  * Article routes tests
  */
 describe('Article CRUD tests', function () {
+
   before(function (done) {
     // Get application
     app = express.init(mongoose);
@@ -29,7 +30,7 @@ describe('Article CRUD tests', function () {
     // Create user credentials
     credentials = {
       username: 'username',
-      password: 'password'
+      password: 'M3@n.jsI$Aw3$0m3'
     };
 
     // Create a new user
