@@ -8,6 +8,7 @@ var config = require('../config'),
   morgan = require('morgan'),
   logger = require('./logger'),
   bodyParser = require('body-parser'),
+  busboyBodyParser = require('busboy-body-parser'),    
   session = require('express-session'),
   MongoStore = require('connect-mongo')(session),
   favicon = require('serve-favicon'),
@@ -79,6 +80,7 @@ module.exports.initMiddleware = function (app) {
   }
 
   // Request body parsing middleware should be above methodOverride
+    
   app.use(bodyParser.urlencoded({
     extended: true
   }));
@@ -88,6 +90,7 @@ module.exports.initMiddleware = function (app) {
   // Add the cookie parser and flash middleware
   app.use(cookieParser());
   app.use(flash());
+  app.use(busboyBodyParser());    
 };
 
 /**

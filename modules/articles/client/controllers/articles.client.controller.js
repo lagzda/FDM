@@ -1,36 +1,29 @@
 'use strict';
 
 // Articles controller
-angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles',
-  function ($scope, $stateParams, $location, Authentication, Articles) {
+angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload',
+  function ($scope, $stateParams, $location, Authentication, Articles, Upload) {
     $scope.authentication = Authentication;
 
     // Create new Article
     $scope.create = function (isValid) {
       $scope.error = null;
-
-      if (!isValid) {
+      if (!isValid) {  
         $scope.$broadcast('show-errors-check-validity', 'articleForm');
 
         return false;
       }
-
-      // Create new Article object
-      var article = new Articles({
-        title: this.title,
-        content: this.content
-      });
-
-      // Redirect after save
-      article.$save(function (response) {
-        $location.path('articles/' + response._id);
-
-        // Clear form fields
-        $scope.title = '';
-        $scope.content = '';
-      }, function (errorResponse) {
-        $scope.error = errorResponse.data.message;
-      });
+      Upload.upload({
+            url: 'api/articles',
+            data: {file: $scope.file, 
+                   title: this.title 
+                  }
+        }).then(function (response) {
+            console.log(response);
+            //$location.path('articles/' + response._id);
+        }, function (errorResponse) {
+            $scope.error = errorResponse.data.message;
+        });    
     };
 
     // Remove existing Article

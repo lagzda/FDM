@@ -5,23 +5,14 @@ angular.module('articles').run(['Menus',
   function (Menus) {
     // Add the articles dropdown item
     Menus.addMenuItem('topbar', {
-      title: 'Articles',
-      state: 'articles',
-      type: 'dropdown',
-      roles: ['*']
-    });
-
-    // Add the dropdown list item
-    Menus.addSubMenuItem('topbar', 'articles', {
-      title: 'List Articles',
-      state: 'articles.list'
-    });
-
-    // Add the dropdown create item
-    Menus.addSubMenuItem('topbar', 'articles', {
-      title: 'Create Articles',
-      state: 'articles.create',
+      title: 'Visualise Data',
+      state: 'articles.list',
       roles: ['user']
     });
+    Menus.addMenuItem('topbar', {
+      title: 'Import Data',
+      state: 'articles.create',
+      roles: ['user']
+    });  
   }
 ]);

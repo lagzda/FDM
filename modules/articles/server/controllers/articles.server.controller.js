@@ -5,6 +5,10 @@
  */
 var path = require('path'),
   mongoose = require('mongoose'),
+  uuid = require('node-uuid'),
+  fs = require('fs'),
+  xlsxj = require('xlsx-to-json'),
+  config = require(path.resolve('./config/config')),
   Article = mongoose.model('Article'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
@@ -12,18 +16,47 @@ var path = require('path'),
  * Create a article
  */
 exports.create = function (req, res) {
-  var article = new Article(req.body);
-  article.user = req.user;
-
-  article.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(article);
-    }
-  });
+  var file = req.files.file,
+    tmpPath = file.name,
+    extIndex = tmpPath.lastIndexOf('.'),
+    extension = (extIndex < 0) ? '' : tmpPath.substr(extIndex),
+    fileName = uuid.v4() + extension,
+    destPath = config.uploads.dataUpload.dest + fileName,
+    contentType = file.mimetype,
+    article = new Article(req.body);
+    article.url = destPath;
+    article.user = req.user;
+    
+    // Server side file type checker.
+      if (contentType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && contentType !== 'application/vnd.ms-excel') {
+        return res.status(400).send('Unsupported file type.');
+      }
+      fs.writeFile(destPath, file.data, function (err) {
+        if (err) {
+            return res.status(400).send('Data is not saved:');   
+        }
+        xlsxj({
+          input: destPath, 
+          output: null
+        }, 
+        function(err, result) {
+          if(err) {
+            console.error(err);
+          } 
+          else {
+            res.json(result);   
+          }
+        });   
+        /*article.save(function (err) {
+          if (err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          } else {
+            res.json(article);
+          }
+        });*/   
+    });	      
 };
 
 /**

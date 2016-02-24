@@ -20,11 +20,11 @@ var ArticleSchema = new Schema({
     trim: true,
     required: 'Title cannot be blank'
   },
-  content: {
+  url: {
     type: String,
     default: '',
     trim: true
-  },
+  },    
   user: {
     type: Schema.ObjectId,
     ref: 'User'
