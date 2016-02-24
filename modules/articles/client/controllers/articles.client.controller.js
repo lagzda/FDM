@@ -7,21 +7,27 @@ angular.module('articles').controller('ArticlesController', ['$scope', '$statePa
 
     // Create new Article
     $scope.create = function (isValid) {
+      // At the beginning there are no errors    
       $scope.error = null;
-      if (!isValid) {  
+      // Check if the form is valid (meets the filetypes and required fields)    
+      if (!isValid) {
+        // Basically just throw error  
         $scope.$broadcast('show-errors-check-validity', 'articleForm');
 
         return false;
       }
+      // If the form is valid perform the upload - send file and title to backend    
       Upload.upload({
             url: 'api/articles',
             data: {file: $scope.file, 
                    title: this.title 
                   }
         }).then(function (response) {
+            // SUCCESS CALLBACK
             console.log(response);
             //$location.path('articles/' + response._id);
         }, function (errorResponse) {
+            // ERROR CALLBACK - shown in the html view if error appears
             $scope.error = errorResponse.data.message;
         });    
     };
