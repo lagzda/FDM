@@ -37,10 +37,12 @@ exports.create = function (req, res) {
     // Add the field of user who imported the data
     article.user = req.user;
     
-    // Validate the mimetype
+    // Validate the mimetype (SKIP FOR NOW)
+    /*
     if (contentType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && contentType !== 'application/vnd.ms-excel'){
         return res.status(400).send('Unsupported file type.');
     }
+    */
     // If mimetype valid write to file system
     fs.writeFile(destPath, file.data, function (err) {
         if (err) {
