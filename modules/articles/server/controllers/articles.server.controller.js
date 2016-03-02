@@ -17,22 +17,34 @@ var path = require('path'),
  * Create a article
  */
 exports.create = function (req, res) {
-  var file = req.files.file,
+    // Get the file from request
+    var file = req.files.file,
+    // Get temporary path of the file   
     tmpPath = file.name,
+    // Find the last occurence of the dot (needed for extension)    
     extIndex = tmpPath.lastIndexOf('.'),
+    // Extract the extension    
     extension = (extIndex < 0) ? '' : tmpPath.substr(extIndex),
+    // Generate a random file name    
     fileName = uuid.v4() + extension,
+    // Specify path to save the excel file    
     destPath = config.uploads.dataUpload.dest + fileName,
     contentType = file.mimetype;
+
     
-    // Server side file type checker.
-      if (contentType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && contentType !== 'application/vnd.ms-excel') {
+    // Validate the mimetype (SKIP FOR NOW)
+    /*
+    if (contentType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && contentType !== 'application/vnd.ms-excel'){
         return res.status(400).send('Unsupported file type.');
-      }
-      fs.writeFile(destPath, file.data, function (err) {
+    }
+    */
+    // If mimetype valid write to file system
+    fs.writeFile(destPath, file.data, function (err) {
         if (err) {
+          console.log(err);
             return res.status(400).send('Data is not saved:');   
         }
+        // When file is written parse the file into json
         xlsxj({
           input: destPath, 
           output: null
@@ -58,7 +70,8 @@ exports.create = function (req, res) {
               }
             })
           }
-        });   
+        });
+        // COMMENTED OUT FOR NOW FOR TESTING...
         /*article.save(function (err) {
           if (err) {
             return res.status(400).send({
