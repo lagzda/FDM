@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+var c;
 var path = require('path'),
   mongoose = require('mongoose'),
   uuid = require('node-uuid'),
@@ -22,10 +23,7 @@ exports.create = function (req, res) {
     extension = (extIndex < 0) ? '' : tmpPath.substr(extIndex),
     fileName = uuid.v4() + extension,
     destPath = config.uploads.dataUpload.dest + fileName,
-    contentType = file.mimetype,
-    article = new Article(req.body);
-    article.url = destPath;
-    article.user = req.user;
+    contentType = file.mimetype;
     
     // Server side file type checker.
       if (contentType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && contentType !== 'application/vnd.ms-excel') {
@@ -44,7 +42,21 @@ exports.create = function (req, res) {
             console.error(err);
           } 
           else {
-            res.json(result);   
+            var DataList = [];
+            result.forEach(function(doc){
+              doc.title = req.body.title;
+              doc.url = destPath;
+              DataList.push(doc);
+            })
+            console.log(DataList);
+            Article.collection.insert(DataList, {}, function(){
+              if (err){
+                console.log("Error");
+                return res.status(400).send('Data is not saved: ');
+              } else{
+                res.status(200).send();
+              }
+            })
           }
         });   
         /*article.save(function (err) {
