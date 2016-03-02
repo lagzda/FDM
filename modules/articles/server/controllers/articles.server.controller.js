@@ -46,6 +46,7 @@ exports.create = function (req, res) {
     // If mimetype valid write to file system
     fs.writeFile(destPath, file.data, function (err) {
         if (err) {
+          console.log(err);
             return res.status(400).send('Data is not saved:');   
         }
         // When file is written parse the file into json
