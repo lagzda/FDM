@@ -1,8 +1,8 @@
 'use strict';
 
 // Articles controller
-angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload',
-  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload) {
+angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 
+  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications) {
     $scope.authentication = Authentication;
 
     // Create new Article
@@ -24,12 +24,12 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
                   }
         }).then(function (response) {
             // SUCCESS CALLBACK
-            console.log(response);
-            //$location.path('articles/' + response._id);
+            notifications.showSuccess({message: 'Your task posted successfully'});
             $state.go('articles.list');
         }, function (errorResponse) {
             // ERROR CALLBACK - shown in the html view if error appears
             $scope.error = errorResponse.data.message;
+            notifications.showError({message: $scope.error});
             $state.go('articles.list');
         });    
     };

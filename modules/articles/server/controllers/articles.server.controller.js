@@ -41,7 +41,6 @@ exports.create = function (req, res) {
     // If mimetype valid write to file system
     fs.writeFile(destPath, file.data, function (err) {
         if (err) {
-          console.log(err);
             return res.status(400).send('Data is not saved:');   
         }
         // When file is written parse the file into json
@@ -51,7 +50,6 @@ exports.create = function (req, res) {
         }, 
         function(err, result) {
           if(err) {
-            console.error(err);
           } 
           else {
             var DataList = [];
@@ -60,12 +58,10 @@ exports.create = function (req, res) {
               doc.url = destPath;
               DataList.push(doc);
             })
-            console.log(DataList);
             Article.collection.insert(DataList, {}, function(){
               if (err){
-                console.log("Error");
                 return res.status(400).send('Data is not saved: ');
-              } else{
+              } else{  
                 res.status(200).send();
               }
             })
@@ -139,6 +135,7 @@ exports.list = function (req, res) {
       });
     } else {
       res.json(articles);
+      
     }
   });
 };

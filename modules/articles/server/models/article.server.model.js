@@ -49,11 +49,6 @@ var ArticleSchema = new Schema({
     default: '',
     trim: true
   },
-    'Placement Number': {
-    type: String,
-    default: '',
-    trim: true
-  },
     'Placement: Resource: Full Name': {
     type: String,
     default: '',
