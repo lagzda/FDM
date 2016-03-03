@@ -50,33 +50,24 @@ exports.create = function (req, res) {
         }, 
         function(err, result) {
           if(err) {
+              return res.status(400).send('Data is not saved: ');
           } 
           else {
-            var DataList = [];
-            result.forEach(function(doc){
-              doc.title = req.body.title;
-              doc.url = destPath;
-              DataList.push(doc);
-            })
-            Article.collection.insert(DataList, {}, function(){
-              if (err){
-                return res.status(400).send('Data is not saved: ');
-              } else{  
-                res.status(200).send();
-              }
-            })
+              var DataList = [];
+              result.forEach(function(doc){
+                  doc.title = req.body.title;
+                  doc.url = destPath;
+                  DataList.push(doc);
+              })
+              Article.collection.insert(DataList, {}, function(){
+                  if (err){
+                      return res.status(400).send('Data is not saved: ');
+                  } else {  
+                      res.status(200).send();
+                  }
+              });
           }
-        });
-        // COMMENTED OUT FOR NOW FOR TESTING...
-        /*article.save(function (err) {
-          if (err) {
-            return res.status(400).send({
-              message: errorHandler.getErrorMessage(err)
-            });
-          } else {
-            res.json(article);
-          }
-        });*/   
+        });  
     });	      
 };
 
@@ -125,19 +116,48 @@ exports.delete = function (req, res) {
 };
 
 /**
+ * Queries
+ */
+function aggregate(controls, callback){
+    var controls = JSON.parse(controls);
+    var xparam = (controls.xparam) ? "$"+controls.xparam : "Total Records";
+    var yparam = "$"+controls.yparam;
+    var error = null;
+    Article.aggregate([
+        { $group: {
+            _id: xparam,
+            value: { $sum: 1 }
+        }}
+    ], function (err, result) {
+        if (err) {
+            error = err;
+        }
+        callback(err, result);
+    }); 
+}
+/**
  * List of Articles
  */
 exports.list = function (req, res) {
-  Article.find().sort('-created').populate('user', 'displayName').exec(function (err, articles) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(articles);
-      
-    }
-  });
+   aggregate(req.query.controls, function(err, result){
+       if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        }
+        console.log(result);
+        res.json(result);
+   });
+//  Article.find().sort('-created').exec(function (err, articles) {
+//    if (err) {
+//      return res.status(400).send({
+//        message: errorHandler.getErrorMessage(err)
+//      });
+//    } else {
+//      res.json(articles);
+//      
+//    }
+//  });
 };
 
 /**

@@ -1,11 +1,18 @@
 'use strict';
 
 // Articles controller
-angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 
-  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications) {
+angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 'Charts',
+  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts) {
     $scope.authentication = Authentication;
-
-    // Create new Article
+    
+    //PARAMETERS TO CHOOSE UPON
+    $scope.representation_params = Charts.get_representation_params();
+    //AVAILABLE CHARTS
+    $scope.available_charts = Charts.get_chart_types();
+    //Default chart  
+    $scope.ch_sel = "Bar"; 
+      
+    // Import data
     $scope.create = function (isValid) {
       // At the beginning there are no errors    
       $scope.error = null;
@@ -13,7 +20,6 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
       if (!isValid) {
         // Basically just throw error  
         $scope.$broadcast('show-errors-check-validity', 'articleForm');
-
         return false;
       }
       // If the form is valid perform the upload - send file and title to backend    
@@ -72,9 +78,24 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
 
     // Find a list of Articles
     $scope.find = function () {
-      $scope.articles = Articles.query();
+      Charts.get_chart_data(function(data){
+          $scope.chart_data = data;
+      }); 
     };
-
+    //Get data for the chart  
+    $scope.get_chart_data = function (isValid) {
+      // At the beginning there are no errors    
+      $scope.error = null;
+      // Check if the form is valid   
+      if (!isValid) {
+        // Basically just throw error  
+        $scope.$broadcast('show-errors-check-validity', 'chartForm');
+        return false;
+      }   
+      Charts.get_chart_data($scope.controls, function(data){
+          $scope.chart_data = data;
+      });
+    };
     // Find existing Article
     $scope.findOne = function () {
       $scope.article = Articles.get({

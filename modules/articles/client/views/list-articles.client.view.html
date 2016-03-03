@@ -1,4 +1,46 @@
 <section ng-controller="ArticlesController" ng-init="find()">
+    <div class="page-header">
+    <h1>Visualize Data</h1>
+  </div>
+<div class="col-md-8">
+    <canvas id="bar"
+            chart-type="ch_sel"
+            class="chart-base"
+            chart-data="chart_data.data"
+            chart-labels="chart_data.labels"
+            chart-series="chart_data.series">
+    </canvas>
+</div>
+<div class="col-md-4">
+    <form name="chartForm" class="form-horizontal" ng-submit="get_chart_data(chartForm.$valid)" novalidate>
+        <fieldset>
+            <div class="form-group">
+                <label ng-class="chart.value == ch_sel ? 'btn-primary' : 'btn-default'" ng-repeat="chart in available_charts" class="form-control btn">
+                    <input class="chart_select" type="radio" name="ch_sel" ng-model="$parent.ch_sel" ng-value="chart.value">{{chart.name}}
+                </label>
+            </div>
+            <div class="form-group">
+              <label for="xparam">Select an X parameter: </label>
+              <select class="form-control" id="xparam" ng-model="controls.xparam" ng-options="option for option in representation_params">
+                <option value="chart-bar">Bar chart</option>
+                <option value="chart-line">Line</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="yparam">Select a Y parameter: </label>
+              <select class="form-control" id="yparam" ng-model="controls.yparam" ng-options="option for option in representation_params">
+              </select>
+            </div>
+            <div class="form-group">
+                <button class="form-control btn btn-success">Go</button> 
+            </div>
+        </fieldset>
+    </form>
+</div>    
+<div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
+    No data yet, <a ui-sref="articles.create">import</a>?
+</div>
+    <!--
     <div notifications-bar class="notifications"></div>
   <div class="page-header">
     <h1>Visualize Data</h1>
@@ -18,4 +60,5 @@
   <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
     No data yet, <a ui-sref="articles.create">import</a>?
   </div>
+-->
 </section>
