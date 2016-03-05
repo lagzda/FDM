@@ -163,7 +163,6 @@ exports.list = function (req, res) {
                 message: errorHandler.getErrorMessage(err)
             });
         }
-        console.log(result);
         res.json(result);
    });
 //  Article.find().sort('-created').exec(function (err, articles) {

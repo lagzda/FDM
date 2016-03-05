@@ -6,20 +6,20 @@
     <div class="col-md-10">
        <div class="form-group">
             <label for="ch_sel">Select a chart type: </label>
-            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option.value for option in available_charts">
-                
+            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in available_charts">   
             </select>
         </div>
     </div>  
 </div>    
 
 <div class="col-md-10">
-    <canvas id="bar"
-            chart-type="ch_sel.value"
+    <canvas id="base" 
             class="chart-base"
-            chart-data="chart_data.data"
+            chart-type="ch_sel"
+            chart-data="['Bar', 'Line', 'Radar'].indexOf(ch_sel) > -1 ? chart_data.data : chart_data.data[0]"
             chart-labels="chart_data.labels"
-            chart-series="chart_data.series">
+            series="chart_data.series"
+            chart-legend="true">
     </canvas>
 </div>
 <div class="col-md-2">
@@ -61,7 +61,6 @@
         </fieldset>
     </form>
 </div>
-
 <!--
 <div class="col-xs-12 text-center">
     <button ng-repeat="operation in operations" class="btn btn-sq-lg btn-default">

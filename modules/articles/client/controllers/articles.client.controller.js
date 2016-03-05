@@ -14,8 +14,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     $scope.operations = Charts.get_operations();  
     //DEFAULT CHART  
     $scope.ch_sel = $scope.available_charts[0];
-      
-      
+       
     // Import data
     $scope.create = function (isValid) {
       // At the beginning there are no errors    
@@ -99,6 +98,14 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
       Charts.get_chart_data($scope.controls, function(data){
           $scope.chart_data = data;
       });
+    };
+    $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
+    $scope.data = [300, 500, 100, 40, 120];
+    $scope.type = 'PolarArea';
+
+    $scope.toggle = function () {
+      $scope.type = $scope.type === 'PolarArea' ?
+        'Pie' : 'PolarArea';
     };
     // Find existing Article
     $scope.findOne = function () {

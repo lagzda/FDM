@@ -60,3 +60,6 @@ a:hover .header-profile-image {
   height: 25px !important;
   padding:2px;
 }
+.mobile-chart {
+    min-height: 200px;
+}

@@ -22,12 +22,12 @@ angular.module('articles').service('Charts', ['Articles',
             "Date"
         ];
         var chart_types = [
-            {name: 'Bar Chart', value: 'Bar'},
-            {name: 'Line Chart', value: 'Line'},
-            {name: 'Doughnut Chart', value: 'Doughnut'},
-            {name: 'Radar Chart', value: 'Radar'},
-            {name: 'Pie Chart', value: 'Pie'},
-            {name: 'Polar Area Chart', value: 'PolarArea'}
+            'Bar',
+            'Line',
+            'Doughnut',
+            'Radar',
+            'Pie',
+            'PolarArea'
         ];
         var operations = [
             'Counting',
