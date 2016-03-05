@@ -2,41 +2,73 @@
     <div class="page-header">
     <h1>Visualize Data</h1>
   </div>
-<div class="col-md-8">
+<div class="row">
+    <div class="col-md-10">
+       <div class="form-group">
+            <label for="ch_sel">Select a chart type: </label>
+            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option.value for option in available_charts">
+                
+            </select>
+        </div>
+    </div>  
+</div>    
+
+<div class="col-md-10">
     <canvas id="bar"
-            chart-type="ch_sel"
+            chart-type="ch_sel.value"
             class="chart-base"
             chart-data="chart_data.data"
             chart-labels="chart_data.labels"
             chart-series="chart_data.series">
     </canvas>
 </div>
-<div class="col-md-4">
+<div class="col-md-2">
     <form name="chartForm" class="form-horizontal" ng-submit="get_chart_data(chartForm.$valid)" novalidate>
         <fieldset>
+<!--
             <div class="form-group">
                 <label ng-class="chart.value == ch_sel ? 'btn-primary' : 'btn-default'" ng-repeat="chart in available_charts" class="form-control btn">
                     <input class="chart_select" type="radio" name="ch_sel" ng-model="$parent.ch_sel" ng-value="chart.value">{{chart.name}}
                 </label>
             </div>
+-->
             <div class="form-group">
               <label for="xparam">Select an X parameter: </label>
               <select class="form-control" id="xparam" ng-model="controls.xparam" ng-options="option for option in representation_params">
-                <option value="chart-bar">Bar chart</option>
-                <option value="chart-line">Line</option>
               </select>
+              <label for="matchx">Match X: </label>
+              <input name="matchx" type="text" ng-model="controls.matchx" id="matchx" class="form-control">    
             </div>
             <div class="form-group">
               <label for="yparam">Select a Y parameter: </label>
               <select class="form-control" id="yparam" ng-model="controls.yparam" ng-options="option for option in representation_params">
               </select>
+              <label for="matchy">Match Y: </label>
+              <input name="matchy" type="text" ng-model="controls.matchy" id="matchy" class="form-control">    
+            </div>
+            <div class="form-group">
+              <label for="sort">Sort: </label>
+              <select class="form-control" id="yparam" ng-model="controls.sort" ng-options="option for option in sorting_params">
+              </select>  
+              <input type="radio" id="asc" name="direction" value="asc" ng-model="controls.direction">
+              <label for="asc">Ascending</label><br>
+              <input type="radio" id="desc" name="direction" value="desc" ng-model="controls.direction">
+              <label for="desc">Descending</label> 
             </div>
             <div class="form-group">
                 <button class="form-control btn btn-success">Go</button> 
             </div>
         </fieldset>
     </form>
-</div>    
+</div>
+
+<!--
+<div class="col-xs-12 text-center">
+    <button ng-repeat="operation in operations" class="btn btn-sq-lg btn-default">
+        {{operation}}
+    </button>
+</div>
+-->
 <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
     No data yet, <a ui-sref="articles.create">import</a>?
 </div>

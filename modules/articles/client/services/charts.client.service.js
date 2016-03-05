@@ -16,6 +16,11 @@ angular.module('articles').service('Charts', ['Articles',
             'Degree Classification',
             'University of Study'
         ];
+        var sorting_params = [
+            "Alphabetical",
+            "Numerical",
+            "Date"
+        ];
         var chart_types = [
             {name: 'Bar Chart', value: 'Bar'},
             {name: 'Line Chart', value: 'Line'},
@@ -24,10 +29,16 @@ angular.module('articles').service('Charts', ['Articles',
             {name: 'Pie Chart', value: 'Pie'},
             {name: 'Polar Area Chart', value: 'PolarArea'}
         ];
-        var chart_controls = {
-            
-        }
+        var operations = [
+            'Counting',
+            'Average',
+            'Comparisons',
+            'Time'
+        ];
         
+        this.get_operations = function (){
+            return operations;
+        }
         this.get_chart_types = function(){
             return chart_types;
         }
@@ -35,6 +46,9 @@ angular.module('articles').service('Charts', ['Articles',
         this.get_representation_params = function(){
             return representation_params;
         };
+        this.get_sorting_params = function(){
+            return sorting_params;
+        }
         
         
         function parse_arguments(){

@@ -7,10 +7,14 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     
     //PARAMETERS TO CHOOSE UPON
     $scope.representation_params = Charts.get_representation_params();
+    $scope.sorting_params = Charts.get_sorting_params();
     //AVAILABLE CHARTS
     $scope.available_charts = Charts.get_chart_types();
-    //Default chart  
-    $scope.ch_sel = "Bar"; 
+    //AVAILABLE DATA OPERATIONS
+    $scope.operations = Charts.get_operations();  
+    //DEFAULT CHART  
+    $scope.ch_sel = $scope.available_charts[0];
+      
       
     // Import data
     $scope.create = function (isValid) {

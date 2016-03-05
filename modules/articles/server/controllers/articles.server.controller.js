@@ -121,17 +121,35 @@ exports.delete = function (req, res) {
 function aggregate(controls, callback){
     var controls = JSON.parse(controls);
     var xparam = (controls.xparam) ? "$"+controls.xparam : "Total Records";
-    var yparam = "$"+controls.yparam;
-    var error = null;
-    Article.aggregate([
-        { $group: {
+    var yparam = (controls.yparam) ? "$"+controls.yparam : null;
+    
+    var aggregation = [];
+    
+    // Matching stage
+    var match = {$match: {}};
+    if (controls.matchx){
+        match.$match[controls.xparam] = controls.matchx;
+    }
+    if (controls.matchy){
+        match.$match[controls.yparam] = controls.matchy;
+    }
+    aggregation.push(match);
+    
+    //Grouping stage
+    var group = { 
+        $group: {
             _id: xparam,
             value: { $sum: 1 }
-        }}
-    ], function (err, result) {
-        if (err) {
-            error = err;
         }
+    };
+    aggregation.push(group);
+    
+    // Sorting Stage
+    var direction = (controls.direction == "asc") ? 1 : -1;
+    var sort = (controls.sort == "Alphabetical") ? {$sort: {_id: direction}} : {$sort: {value: direction}};
+    aggregation.push(sort);
+    
+    Article.aggregate(aggregation, function (err, result) {
         callback(err, result);
     }); 
 }
