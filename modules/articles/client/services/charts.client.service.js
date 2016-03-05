@@ -76,8 +76,12 @@ angular.module('articles').service('Charts', ['Articles',
                 args_object = arguments[0];
             }    
             Articles.query({controls: args_object}, function(result) {
-                var labels = result.map(i => i._id);
-                var values = result.map(i => i.value);
+                var labels = result.map(function(i){
+                    return i._id;
+                });
+                var values = result.map(function (i){
+                    return i.value;   
+                });
                 var article = result;
                 var chart_data = {
                     labels : labels,
