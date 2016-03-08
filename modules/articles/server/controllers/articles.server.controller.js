@@ -121,7 +121,7 @@ exports.delete = function (req, res) {
 function aggregate(controls, callback){
     var controls = JSON.parse(controls);
     var xparam = (controls.xparam) ? "$"+controls.xparam : "Total Records";
-    var yparam = (controls.yparam) ? "$"+controls.yparam : null;
+    var yparam = (controls.yparam) ? "$"+controls.yparam : { $sum: 1 };
     
     var aggregation = [];
     

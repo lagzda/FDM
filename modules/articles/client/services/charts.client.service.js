@@ -7,8 +7,6 @@ angular.module('articles').service('Charts', ['Articles',
             'Degree Subject',
             'Stream Trained',
             'Job Role',
-            'Placement Number',
-            'Placement: Resource: Full Name',
             'Operating Location Name',
             'FDM Office',
             'Start Date',
@@ -86,7 +84,7 @@ angular.module('articles').service('Charts', ['Articles',
                 var chart_data = {
                     labels : labels,
                     data : [values],
-                    series : ['Series A', 'Series B']
+                    series : [args_object.xparam]
                 };    
             callback(chart_data);
             });    
