@@ -53,20 +53,28 @@ angular.module('articles').service('Charts', ['Articles',
         this.get_chart_data = function () {
             var args_object = {},
                 length = arguments.length,
+                page = 1,
                 callback = arguments[arguments.length - 1];
             
             if (typeof callback != 'function'){
                 console.error("The last parameter needs to be a function");
             }
-            if (length > 2){
+            if (length > 3){
                 console.error("Not ok");
             }
             else if (length == 2){
                 args_object = arguments[0];
             }
-            console.log(args_object);
-            Articles.query({parameters: args_object}, function(result) {
+            else if(length == 3){
+                args_object = arguments[0];
+                page = arguments[1] || 1;
+            }
+            Articles.query({parameters: args_object, page: page}, function(result) {
+                var page_count = result.pop();
                 var labels = result.map(function(i){
+                    if (i._id.length > 15){
+                        return i._id.slice(0,15) + '...';
+                    }
                     return i._id;
                 });
                 var values = result.map(function (i){
@@ -76,7 +84,8 @@ angular.module('articles').service('Charts', ['Articles',
                 var chart_data = {
                     labels : labels,
                     data : [values],
-                    series : ['Temporary']
+                    series : ['Temporary'],
+                    page_count : page_count
                 };    
             callback(chart_data);
             });    

@@ -31,6 +31,12 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
             delete $scope.parameters['param'+(ind+1)];
         }
     }
+    
+    //TABS
+    $scope.tabs = [
+        { title:'1', content:'Dynamic content 1' },
+        { title:'2', content:'Dynamic content 2', disabled: true }
+    ];
       
     //PARAMETERS TO CHOOSE FROM
     $scope.representation_params = Charts.get_representation_params();
@@ -41,7 +47,23 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     $scope.operations = Charts.get_operations();  
     //DEFAULT CHART  
     $scope.ch_sel = $scope.available_charts[0];
+    //PAGE NUMBER
+    $scope.page_no = 1;  
     
+    //PAGINATION RELATED
+    $scope.decr_page = function(page_no){
+        if (page_no > 1){
+            $scope.page_no -= 1;
+            $scope.get_chart_data(true);
+        }
+    }
+    $scope.inc_page = function(page_no){
+        if (page_no < $scope.chart_data.page_count){
+            $scope.page_no += 1;
+            $scope.get_chart_data(true);
+        }
+    } 
+      
     $scope.update_operation = function(ind, operation){
         if (operation != 'Match') {
             if (operation != 'Sort'){
@@ -49,7 +71,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
             }
             $scope.parameters['param'+ind].match = '';
         }
-    } 
+    }
     //LOCAL SEARCH
     $scope.update_group_data = function(ind, sel){
         Charts.localSearch(sel, function(result){
@@ -57,6 +79,18 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         });  
     };
     
+    //FILTERING FUNCTION FOR AUTOCOMPLETE
+    $scope.querySearch = function($query, auto) {
+        return auto.filter(function(item){
+            return item.name.toLowerCase().indexOf($query.toLowerCase()) != -1;
+        });
+        //return $query ? auto.filter( createFilterFor($query) ) : auto; 
+    }
+    function createFilterFor(query) {
+      return function filterFn(data) {
+        return (data.name.indexOf(query) === 0);
+      };
+    }
     // Import data
     $scope.create = function (isValid) {
       // At the beginning there are no errors    
@@ -138,7 +172,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         $scope.$broadcast('show-errors-check-validity', 'chartForm');
         return false;
       }   
-      Charts.get_chart_data($scope.parameters, function(data){
+      Charts.get_chart_data($scope.parameters, $scope.page_no, function(data){
           $scope.chart_data = data;
       });
     };

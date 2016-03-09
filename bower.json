@@ -19,7 +19,8 @@
     "ng-notifications-bar": "~0.0.16",
     "angular-chart.js": "~0.8.8",
     "angucomplete-alt": "~2.2.0",
-    "angular-material": "~1.0.6"
+    "angular-material": "~1.0.6",
+    "ng-tags-input": "3.0.0"
   },
   "resolutions": {
     "angular": "~1.3"

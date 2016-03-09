@@ -118,27 +118,41 @@ exports.delete = function (req, res) {
 /**
  * Queries
  */
-function aggregate(parameters, callback){
+function aggregate(parameters, page, callback){
     var parameters = JSON.parse(parameters),
         match = {$match: {}},
         def = 'Total Records',
         sort = {$sort: {value: -1}},
+        accummulator = { $sum: 1 },
+        page_size = 10,
+        page = page - 1,
         aggregation = [];
-    
+    if (page < 0){
+        page = 0;
+    }
     for (var key in parameters) {
         parameters[key].mongo = "$"+parameters[key].category;
-        if(parameters[key].match){
-            match.$match[parameters[key].category] = parameters[key].match;
+        if(parameters[key].match.length > 0){
+            console.log(parameters[key]);
+            var values = parameters[key].match.map(function(i){
+                return i.name;
+            });
+            match.$match[parameters[key].category] = { $in: values };
         } else {
             if (parameters[key].operation == 'Sort'){
-                console.log("Should be sorting");
                 var direction = (parameters[key].direction == "asc") ? 1 : -1;
                 sort = {$sort: {value: direction}};
                 aggregation.push(sort);
             }
-            if (parameters[key].category && def == 'Total Records'){
+            if (parameters[key].category && (def == 'Total Records' || parameters[key].operation == 'Group by')){
                 def = parameters[key].mongo;  
-            }   
+            }
+            if (parameters[key].operation == 'Get min'){
+                accummulator = {$min: { $sum: 1 }};
+            }
+            if (parameters[key].operation == 'Get max'){
+                accummulator = {$max: { $sum: 1 }};
+            }
         }
     }
     
@@ -148,21 +162,32 @@ function aggregate(parameters, callback){
     var group = {
         $group: {
             _id: def,
-            value: { $sum: 1 }
+            value: accummulator
         }
     };
     aggregation.push(group);
     aggregation.push(sort);
+    
+    
     console.log(aggregation);
     
     
     Article.aggregate(aggregation, function (err, result) {
-        callback(err, result);
+        //First get the count of pages (aggregate without skip and limit)
+        var page_count = Math.ceil(result.length / page_size);
+        //Then aggregate with the sort and skip
+        var skip = { $skip: page_size * page };
+        aggregation.push(skip);
+        var limit = { $limit: page_size };
+        aggregation.push(limit);
+        Article.aggregate(aggregation, function (err, result) {
+            result.push(page_count);
+            callback(err, result);
+        });
     }); 
 }
 
 function distinct(group, callback){
-    
     Article.distinct(group, function(err, result){
         callback(err, result);
     });
@@ -182,7 +207,7 @@ exports.list = function (req, res) {
         });
     }
     else {
-        aggregate(req.query.parameters, function(err, result){
+        aggregate(req.query.parameters, req.query.page, function(err, result){
            if (err) {
                 return res.status(400).send({
                     message: errorHandler.getErrorMessage(err)
