@@ -3,63 +3,101 @@
     <h1>Visualize Data</h1>
   </div>
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-9">
        <div class="form-group">
             <label for="ch_sel">Select a chart type: </label>
-            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in available_charts">   
+            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in available_charts">
             </select>
         </div>
     </div>  
 </div>    
 
-<div class="col-md-10">
-    <canvas id="base" 
+<div class="col-md-9">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ch_sel}} chart</h3>
+        </div>
+        <div class="panel-body">
+            <canvas id="base" 
             class="chart-base"
             chart-type="ch_sel"
             chart-data="['Bar', 'Line', 'Radar'].indexOf(ch_sel) > -1 ? chart_data.data : chart_data.data[0]"
-            chart-labels="chart_data.labels"
-            series="chart_data.series"
-            chart-legend="true">
-    </canvas>
+            chart-labels="chart_data.labels">
+            </canvas>
+            <div class="col-xs-12">
+            <nav>
+              <ul class="pager">
+                <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Previous</a></li>
+                <li class="next"><a href="#">Next <span aria-hidden="true">&rarr;</span></a></li>
+              </ul>
+            </nav>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="col-md-2">
-    <form name="chartForm" class="form-horizontal" ng-submit="get_chart_data(chartForm.$valid)" novalidate>
+    
+<div class="col-md-3">
+    <div class="well">
+        <div class="text-center">
+            <legend>Operations</legend>
+        </div>
+        <form name="chartForm" class="form-horizontal" ng-submit="get_chart_data(chartForm.$valid)" novalidate>
         <fieldset>
-<!--
-            <div class="form-group">
-                <label ng-class="chart.value == ch_sel ? 'btn-primary' : 'btn-default'" ng-repeat="chart in available_charts" class="form-control btn">
-                    <input class="chart_select" type="radio" name="ch_sel" ng-model="$parent.ch_sel" ng-value="chart.value">{{chart.name}}
-                </label>
-            </div>
--->
-            <div class="form-group">
-              <label for="xparam">Select an X parameter: </label>
-              <select class="form-control" id="xparam" ng-model="controls.xparam" ng-options="option for option in representation_params">
-              </select>
-              <label for="matchx">Match X: </label>
-              <input name="matchx" type="text" ng-model="controls.matchx" id="matchx" class="form-control">    
-            </div>
-            <div class="form-group">
-              <label for="yparam">Select a Y parameter: </label>
-              <select class="form-control" id="yparam" ng-model="controls.yparam" ng-options="option for option in representation_params">
-              </select>
-              <label for="matchy">Match Y: </label>
-              <input name="matchy" type="text" ng-model="controls.matchy" id="matchy" class="form-control">    
-            </div>
-            <div class="form-group">
-              <label for="sort">Sort: </label>
-              <select class="form-control" id="yparam" ng-model="controls.sort" ng-options="option for option in sorting_params">
-              </select>  
-              <input type="radio" id="asc" name="direction" value="asc" ng-model="controls.direction">
+            <div ng-repeat="parameter in parameters" class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Operation no. {{$index + 1}}</h3>
+                </div> 
+                <div class="panel-body">
+                      <label for="param">Select operation: </label>
+                      <select class="form-control" 
+                              id="param" 
+                              ng-change="update_operation($index+1, parameters['param' + ($index + 1)].operation)"
+                              ng-model="parameters['param' + ($index + 1)].operation" 
+                              ng-options="option for option in operations">
+                      </select>
+                    <div ng-if="parameters['param' + ($index + 1)].operation != 'Sort' && parameters['param' + ($index + 1)].operation != ''">
+                        <label for="param">Select category: </label>
+                      <select class="form-control" 
+                              id="param" 
+                              ng-change="update_group_data($index+1, parameters['param' + ($index + 1)].category)"
+                              ng-model="parameters['param' + ($index + 1)].category" 
+                              ng-options="option for option in representation_params">
+                          <option value="">Select...</option>
+                      </select>
+                    </div>
+
+                      
+                    <div ng-if="parameters['param' + ($index + 1)].operation == 'Match'">
+                        <label for="match">Match against: </label>
+                      <input ng-attr-list="{{'param' + ($index + 1)+'list'}}" name="match" type="text" ng-model="parameters['param' + ($index + 1)].match" id="match" class="form-control">
+                        <datalist ng-attr-id="{{'param' + ($index + 1)+'list'}}">
+                            <option ng-repeat="item in parameters['param' + ($index + 1)].auto track by $index" value="{{item.name}}">
+                        </datalist>
+                    </div>
+                    <div ng-if="parameters['param' + ($index + 1)].operation == 'Sort'">
+                        <input type="radio" id="asc" name="direction" value="asc" ng-model="parameters['param' + ($index + 1)].direction">
               <label for="asc">Ascending</label><br>
-              <input type="radio" id="desc" name="direction" value="desc" ng-model="controls.direction">
-              <label for="desc">Descending</label> 
+              <input type="radio" id="desc" name="direction" value="desc" ng-model="parameters['param' + ($index + 1)].direction">
+              <label for="desc">Descending</label>
+                    </div>
+                        <hr>
+                        <div class="col-xs-12">
+                            <button ng-click="remove_parameter($index + 1)" class="form-control btn btn-danger">Remove operation</button>
+                        </div> 
+                    
+                </div>
             </div>
+            <div class="col-xs-12">
+                <button ng-click="add_parameter()" class="form-control btn btn-primary">Add operation</button>
+            </div>  
+            <br><br>
             <div class="form-group">
                 <button class="form-control btn btn-success">Go</button> 
             </div>
         </fieldset>
     </form>
+    </div>
+    
 </div>
 <!--
 <div class="col-xs-12 text-center">

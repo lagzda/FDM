@@ -118,53 +118,80 @@ exports.delete = function (req, res) {
 /**
  * Queries
  */
-function aggregate(controls, callback){
-    var controls = JSON.parse(controls);
-    var xparam = (controls.xparam) ? "$"+controls.xparam : "Total Records";
-    var yparam = (controls.yparam) ? "$"+controls.yparam : { $sum: 1 };
+function aggregate(parameters, callback){
+    var parameters = JSON.parse(parameters),
+        match = {$match: {}},
+        def = 'Total Records',
+        sort = {$sort: {value: -1}},
+        aggregation = [];
     
-    var aggregation = [];
+    for (var key in parameters) {
+        parameters[key].mongo = "$"+parameters[key].category;
+        if(parameters[key].match){
+            match.$match[parameters[key].category] = parameters[key].match;
+        } else {
+            if (parameters[key].operation == 'Sort'){
+                console.log("Should be sorting");
+                var direction = (parameters[key].direction == "asc") ? 1 : -1;
+                sort = {$sort: {value: direction}};
+                aggregation.push(sort);
+            }
+            if (parameters[key].category && def == 'Total Records'){
+                def = parameters[key].mongo;  
+            }   
+        }
+    }
     
-    // Matching stage
-    var match = {$match: {}};
-    if (controls.matchx){
-        match.$match[controls.xparam] = controls.matchx;
-    }
-    if (controls.matchy){
-        match.$match[controls.yparam] = controls.matchy;
-    }
     aggregation.push(match);
     
     //Grouping stage
-    var group = { 
+    var group = {
         $group: {
-            _id: xparam,
+            _id: def,
             value: { $sum: 1 }
         }
     };
     aggregation.push(group);
-    
-    // Sorting Stage
-    var direction = (controls.direction == "asc") ? 1 : -1;
-    var sort = (controls.sort == "Alphabetical") ? {$sort: {_id: direction}} : {$sort: {value: direction}};
     aggregation.push(sort);
+    console.log(aggregation);
+    
     
     Article.aggregate(aggregation, function (err, result) {
         callback(err, result);
     }); 
 }
+
+function distinct(group, callback){
+    
+    Article.distinct(group, function(err, result){
+        callback(err, result);
+    });
+}
 /**
  * List of Articles
  */
 exports.list = function (req, res) {
-   aggregate(req.query.controls, function(err, result){
-       if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
-        }
-        res.json(result);
-   });
+    if (req.query.group){
+        distinct(req.query.group, function(err, result){
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            }
+            res.json(result);  
+        });
+    }
+    else {
+        aggregate(req.query.parameters, function(err, result){
+           if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            }
+            res.json(result);
+       });    
+    }
+   
 //  Article.find().sort('-created').exec(function (err, articles) {
 //    if (err) {
 //      return res.status(400).send({

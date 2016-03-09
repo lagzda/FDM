@@ -4,8 +4,35 @@
 angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 'Charts',
   function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts) {
     $scope.authentication = Authentication;
-    
-    //PARAMETERS TO CHOOSE UPON
+    //PARAMETER LIST
+    $scope.parameters = {
+        'param1': {operation: '',
+                   category: '',
+                   match: '',
+                   direction: '',
+                   auto: ''
+                  }   
+    };
+    //ADD PARAMETER
+    $scope.add_parameter = function(){
+        var index = Object.keys($scope.parameters).length;
+        $scope.parameters['param'+(index+1)] = {operation: '',
+                                                category: '',
+                                                match: '',
+                                                direction: '',
+                                                auto: []
+                                                };
+    }
+    //DELETE PARAMETER
+    $scope.remove_parameter = function(ind){
+        delete $scope.parameters['param'+(ind)];
+        for (var i = ind; i < Object.keys($scope.parameters).length + 1; i++){
+            $scope.parameters['param'+(ind)] = $scope.parameters['param'+(ind+1)];
+            delete $scope.parameters['param'+(ind+1)];
+        }
+    }
+      
+    //PARAMETERS TO CHOOSE FROM
     $scope.representation_params = Charts.get_representation_params();
     $scope.sorting_params = Charts.get_sorting_params();
     //AVAILABLE CHARTS
@@ -14,7 +41,22 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     $scope.operations = Charts.get_operations();  
     //DEFAULT CHART  
     $scope.ch_sel = $scope.available_charts[0];
-       
+    
+    $scope.update_operation = function(ind, operation){
+        if (operation != 'Match') {
+            if (operation != 'Sort'){
+                $scope.parameters['param'+ind].direction = '';
+            }
+            $scope.parameters['param'+ind].match = '';
+        }
+    } 
+    //LOCAL SEARCH
+    $scope.update_group_data = function(ind, sel){
+        Charts.localSearch(sel, function(result){
+            $scope.parameters['param'+ind].auto = result;
+        });  
+    };
+    
     // Import data
     $scope.create = function (isValid) {
       // At the beginning there are no errors    
@@ -79,7 +121,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         $scope.error = errorResponse.data.message;
       });
     };
-
+    
     // Find a list of Articles
     $scope.find = function () {
       Charts.get_chart_data(function(data){
@@ -96,17 +138,9 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         $scope.$broadcast('show-errors-check-validity', 'chartForm');
         return false;
       }   
-      Charts.get_chart_data($scope.controls, function(data){
+      Charts.get_chart_data($scope.parameters, function(data){
           $scope.chart_data = data;
       });
-    };
-    $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
-    $scope.data = [300, 500, 100, 40, 120];
-    $scope.type = 'PolarArea';
-
-    $scope.toggle = function () {
-      $scope.type = $scope.type === 'PolarArea' ?
-        'Pie' : 'PolarArea';
     };
     // Find existing Article
     $scope.findOne = function () {

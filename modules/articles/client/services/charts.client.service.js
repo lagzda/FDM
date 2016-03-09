@@ -28,10 +28,12 @@ angular.module('articles').service('Charts', ['Articles',
             'PolarArea'
         ];
         var operations = [
-            'Counting',
-            'Average',
-            'Comparisons',
-            'Time'
+            'Match',
+            'Group by',
+            'Sort',
+            'Get average',
+            'Get min',
+            'Get max'
         ];
         
         this.get_operations = function (){
@@ -48,17 +50,6 @@ angular.module('articles').service('Charts', ['Articles',
             return sorting_params;
         }
         
-        
-        function parse_arguments(){
-            var args_object = {};
-            for (var i = 0; i < arguments.length-1; i++) {
-                var split = String(arguments[i]).split("=");
-                args_object[split[0]] = split[1]; 
-            }
-            return args_object;
-        };
-        
-        
         this.get_chart_data = function () {
             var args_object = {},
                 length = arguments.length,
@@ -72,8 +63,9 @@ angular.module('articles').service('Charts', ['Articles',
             }
             else if (length == 2){
                 args_object = arguments[0];
-            }    
-            Articles.query({controls: args_object}, function(result) {
+            }
+            console.log(args_object);
+            Articles.query({parameters: args_object}, function(result) {
                 var labels = result.map(function(i){
                     return i._id;
                 });
@@ -84,10 +76,22 @@ angular.module('articles').service('Charts', ['Articles',
                 var chart_data = {
                     labels : labels,
                     data : [values],
-                    series : [args_object.xparam]
+                    series : ['Temporary']
                 };    
             callback(chart_data);
             });    
         };
+        this.localSearch = function(group, callback){
+            Articles.query({group: group}, function(result) {
+                var result_dict = [];
+                result.forEach(function(res){
+                    if (typeof res == 'string'){
+                        res = {name: res};
+                        result_dict.push(res);
+                    }
+                });
+                callback(result_dict);
+            });
+        }
 	}
 ]);

@@ -7,12 +7,14 @@ module.exports = {
         'public/lib/bootstrap/dist/css/bootstrap.css',
         'public/lib/bootstrap/dist/css/bootstrap-theme.css',
         'public/lib/ng-notifications-bar/dist/ngNotificationsBar.min.css',
-        'public/lib/angular-chart.js/dist/angular-chart.css'
+        'public/lib/angular-chart.js/dist/angular-chart.css',
+
       ],
       js: [
         'public/lib/angular/angular.js',
         'public/lib/angular-resource/angular-resource.js',
         'public/lib/angular-animate/angular-animate.js',
+        'public/lib/angular-aria/angular-aria.min.js',
         'public/lib/angular-messages/angular-messages.js',
         'public/lib/angular-ui-router/release/angular-ui-router.js',
         'public/lib/angular-ui-utils/ui-utils.js',
@@ -23,7 +25,8 @@ module.exports = {
         'public/lib/angular-sanitize/angular-sanitize.js',
         'public/lib/ng-notifications-bar/dist/ngNotificationsBar.min.js',
         'public/lib/Chart.js/Chart.min.js',
-        'public/lib/angular-chart.js/dist/angular-chart.js'
+        'public/lib/angular-chart.js/dist/angular-chart.js',
+        'public/lib/angular-material/angular-material.min.js'
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
     },
