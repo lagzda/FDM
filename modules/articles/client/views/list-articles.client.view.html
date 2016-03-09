@@ -6,7 +6,7 @@
     <div class="col-md-8">
        <div class="form-group">
             <label for="ch_sel">Select a chart type: </label>
-            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in available_charts">
+            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in controls.chart_types">
             </select>
         </div>
     </div>  
@@ -43,21 +43,16 @@
     
 <div class="col-md-4">
     
-<!--
-    <tabset active="active">
-    <tab index="$index + 1" ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
-      {{tab.content}}
-    </tab>
-    <tab index="3" select="alertMe()">
-      <tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Alert!
-      </tab-heading>
-      I've got an HTML heading, and a select callback. Pretty cool!
-    </tab>
-    <tab index="tabs.length" heading="Static title"></tab>
-  </tabset>
--->
-    
+<tabset class="tab-container">
+  <tab ng-repeat="tab in tabs" active="tab.active" tab-highlight> <!-- the tab highlight directive -->
+    <tab-heading>
+      <span>{{tab.title}}</span> <i class="glyphicon glyphicon-remove" ng-click="removeTab($event, $index)"></i> <!-- the tab close button -->
+    </tab-heading>
+    <h1>{{tab.content}}</h1>
+  </tab>
+  <!-- this is the open new tab button -->
+  <button class="btn btn-default" ng-click="addTab()"></button>
+</tabset> 
     
     <div class="well">
         <div class="text-center">
@@ -79,7 +74,7 @@
                               id="param" 
                               ng-change="update_operation($index+1, parameters['param' + ($index + 1)].operation)"
                               ng-model="parameters['param' + ($index + 1)].operation" 
-                              ng-options="option for option in operations">
+                              ng-options="option for option in controls.operations">
                       </select>
                     <div ng-if="parameters['param' + ($index + 1)].operation != 'Sort' && parameters['param' + ($index + 1)].operation != ''">
                         <label for="param">Select category: </label>
@@ -87,7 +82,7 @@
                               id="param" 
                               ng-change="update_group_data($index+1, parameters['param' + ($index + 1)].category)"
                               ng-model="parameters['param' + ($index + 1)].category" 
-                              ng-options="option for option in representation_params">
+                              ng-options="option for option in controls.categories">
                           <option value="">Select...</option>
                       </select>
                     </div>

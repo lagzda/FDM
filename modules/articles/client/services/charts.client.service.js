@@ -3,7 +3,7 @@
 //Articles service
 angular.module('articles').service('Charts', ['Articles',
 	function(Articles) {
-        var representation_params = [
+        var categories = [
             'Degree Subject',
             'Stream Trained',
             'Job Role',
@@ -13,11 +13,6 @@ angular.module('articles').service('Charts', ['Articles',
             'End Date',
             'Degree Classification',
             'University of Study'
-        ];
-        var sorting_params = [
-            "Alphabetical",
-            "Numerical",
-            "Date"
         ];
         var chart_types = [
             'Bar',
@@ -35,6 +30,11 @@ angular.module('articles').service('Charts', ['Articles',
             'Get min',
             'Get max'
         ];
+        var sorting_params = [
+            "Alphabetical",
+            "Numerical",
+            "Date"
+        ];
         
         this.get_operations = function (){
             return operations;
@@ -49,6 +49,14 @@ angular.module('articles').service('Charts', ['Articles',
         this.get_sorting_params = function(){
             return sorting_params;
         }
+        this.get_controls = function(){
+            return {
+                'categories': categories,
+                'chart_types': chart_types,
+                'operations': operations    
+            }
+        }
+            
         
         this.get_chart_data = function () {
             var args_object = {},

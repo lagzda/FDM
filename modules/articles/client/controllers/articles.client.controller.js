@@ -1,55 +1,51 @@
 'use strict';
 
 // Articles controller
-angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 'Charts',
-  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts) {
+angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 'Charts', 'Controls',
+  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts, Controls) {
     $scope.authentication = Authentication;
-    //PARAMETER LIST
+    
+    //PARAMETER CONTROL OPTIONS TO CHOOSE FROM [Available charts, Categories, Operations]
+    $scope.controls = Charts.get_controls();
+    //DEFAULT CHART  
+    $scope.ch_sel = $scope.controls.chart_types[0];
+    //PAGE NUMBER
+    $scope.page_no = 1;
+    //PARAMETER (OPERATION) LIST 
     $scope.parameters = {
-        'param1': {operation: '',
-                   category: '',
-                   match: '',
-                   direction: '',
-                   auto: ''
-                  }   
+        'param1': Controls.generate_parameter_frame() 
     };
     //ADD PARAMETER
     $scope.add_parameter = function(){
-        var index = Object.keys($scope.parameters).length;
-        $scope.parameters['param'+(index+1)] = {operation: '',
-                                                category: '',
-                                                match: '',
-                                                direction: '',
-                                                auto: []
-                                                };
+        Controls.add_parameter($scope.parameters);
     }
     //DELETE PARAMETER
     $scope.remove_parameter = function(ind){
-        delete $scope.parameters['param'+(ind)];
-        for (var i = ind; i < Object.keys($scope.parameters).length + 1; i++){
-            $scope.parameters['param'+(ind)] = $scope.parameters['param'+(ind+1)];
-            delete $scope.parameters['param'+(ind+1)];
-        }
+        Controls.remove_parameter($scope.parameters, ind);
     }
-    
     //TABS
-    $scope.tabs = [
-        { title:'1', content:'Dynamic content 1' },
-        { title:'2', content:'Dynamic content 2', disabled: true }
-    ];
+    // Tab counter
+    var counter = 1;
+    // Array to store the tabs
+    $scope.tabs = [];
+    // Add tab to the end of the array
+    var addTab = function () {
+      $scope.tabs.push({ title: 'Tab ' + counter, content: 'Tab ' + counter });
+      counter++;
+      $scope.tabs[$scope.tabs.length - 1].active = true;
+    };
+
+    // Remove tab by index
+    var removeTab = function (event, index) {
+      event.preventDefault();
+      event.stopPropagation();
+      $scope.tabs.splice(index, 1);
+    };
+    // Initialize the scope functions
+    $scope.addTab    = addTab;
+    $scope.removeTab = removeTab;
+     
       
-    //PARAMETERS TO CHOOSE FROM
-    $scope.representation_params = Charts.get_representation_params();
-    $scope.sorting_params = Charts.get_sorting_params();
-    //AVAILABLE CHARTS
-    $scope.available_charts = Charts.get_chart_types();
-    //AVAILABLE DATA OPERATIONS
-    $scope.operations = Charts.get_operations();  
-    //DEFAULT CHART  
-    $scope.ch_sel = $scope.available_charts[0];
-    //PAGE NUMBER
-    $scope.page_no = 1;  
-    
     //PAGINATION RELATED
     $scope.decr_page = function(page_no){
         if (page_no > 1){
@@ -63,22 +59,16 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
             $scope.get_chart_data(true);
         }
     } 
-      
+    //CHANGE PARAMETER OBJECT DEPENDING ON OPERATION  
     $scope.update_operation = function(ind, operation){
-        if (operation != 'Match') {
-            if (operation != 'Sort'){
-                $scope.parameters['param'+ind].direction = '';
-            }
-            $scope.parameters['param'+ind].match = '';
-        }
+        Controls.update_operation($scope.parameters, ind, operation);
     }
-    //LOCAL SEARCH
+    //GET AUTO COMPLETE DATA FOR MATCH AGAINST
     $scope.update_group_data = function(ind, sel){
         Charts.localSearch(sel, function(result){
             $scope.parameters['param'+ind].auto = result;
         });  
     };
-    
     //FILTERING FUNCTION FOR AUTOCOMPLETE
     $scope.querySearch = function($query, auto) {
         return auto.filter(function(item){
@@ -91,6 +81,8 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         return (data.name.indexOf(query) === 0);
       };
     }
+      
+      
     // Import data
     $scope.create = function (isValid) {
       // At the beginning there are no errors    
