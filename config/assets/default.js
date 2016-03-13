@@ -8,7 +8,8 @@ module.exports = {
         'public/lib/bootstrap/dist/css/bootstrap-theme.css',
         'public/lib/ng-notifications-bar/dist/ngNotificationsBar.min.css',
         'public/lib/angular-chart.js/dist/angular-chart.css',
-        'public/lib/ng-tags-input/ng-tags-input.min.css'   
+        'public/lib/ng-tags-input/ng-tags-input.min.css',
+        'public/lib/angular-material/angular-material.min.css',
 
       ],
       js: [

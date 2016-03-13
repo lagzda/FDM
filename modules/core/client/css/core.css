@@ -63,3 +63,7 @@ a:hover .header-profile-image {
 .mobile-chart {
     min-height: 300px;
 }
+.panel-primary > .panel-heading {
+    background-color: rgb(63,81,181);
+    background-image: none;
+}

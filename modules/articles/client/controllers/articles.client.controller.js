@@ -4,46 +4,41 @@
 angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 'Charts', 'Controls',
   function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts, Controls) {
     $scope.authentication = Authentication;
-    
+    // AUTO COMPLETE STORE AND CACHE  
+    $scope.auto = {};
     //PARAMETER CONTROL OPTIONS TO CHOOSE FROM [Available charts, Categories, Operations]
     $scope.controls = Charts.get_controls();
     //DEFAULT CHART  
     $scope.ch_sel = $scope.controls.chart_types[0];
     //PAGE NUMBER
     $scope.page_no = 1;
+    //TAB LIST 
+    $scope.tabs = {
+        'tab1': Controls.generate_tab_frame()
+    };
     //PARAMETER (OPERATION) LIST 
     $scope.parameters = {
         'param1': Controls.generate_parameter_frame() 
     };
+    
+    //ADD TAB
+    $scope.add_tab = function(){
+        Controls.add_tab($scope.tabs);
+    };  
+    //DELETE TAB
+    $scope.remove_tab = function(event, ind){
+        event.preventDefault();
+        Controls.remove_tab($scope.tabs, ind);
+    };  
     //ADD PARAMETER
     $scope.add_parameter = function(){
-        Controls.add_parameter($scope.parameters);
-    }
+        Controls.add_parameter(this.tab.parameters);
+    };
     //DELETE PARAMETER
     $scope.remove_parameter = function(ind){
-        Controls.remove_parameter($scope.parameters, ind);
-    }
-    //TABS
-    // Tab counter
-    var counter = 1;
-    // Array to store the tabs
-    $scope.tabs = [];
-    // Add tab to the end of the array
-    var addTab = function () {
-      $scope.tabs.push({ title: 'Tab ' + counter, content: 'Tab ' + counter });
-      counter++;
-      $scope.tabs[$scope.tabs.length - 1].active = true;
+        Controls.remove_parameter(this.tab.parameters, ind);
     };
-
-    // Remove tab by index
-    var removeTab = function (event, index) {
-      event.preventDefault();
-      event.stopPropagation();
-      $scope.tabs.splice(index, 1);
-    };
-    // Initialize the scope functions
-    $scope.addTab    = addTab;
-    $scope.removeTab = removeTab;
+    
      
       
     //PAGINATION RELATED
@@ -52,30 +47,31 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
             $scope.page_no -= 1;
             $scope.get_chart_data(true);
         }
-    }
+    };
     $scope.inc_page = function(page_no){
         if (page_no < $scope.chart_data.page_count){
             $scope.page_no += 1;
             $scope.get_chart_data(true);
         }
-    } 
+    }; 
     //CHANGE PARAMETER OBJECT DEPENDING ON OPERATION  
     $scope.update_operation = function(ind, operation){
-        Controls.update_operation($scope.parameters, ind, operation);
-    }
+        Controls.update_operation(this.tab.parameters, ind, operation);
+    };
     //GET AUTO COMPLETE DATA FOR MATCH AGAINST
     $scope.update_group_data = function(ind, sel){
         Charts.localSearch(sel, function(result){
-            $scope.parameters['param'+ind].auto = result;
+            $scope.auto[sel] = result;
+            //this.tab.parameters['param'+ind].auto = result;
         });  
     };
     //FILTERING FUNCTION FOR AUTOCOMPLETE
     $scope.querySearch = function($query, auto) {
         return auto.filter(function(item){
-            return item.name.toLowerCase().indexOf($query.toLowerCase()) != -1;
+            return item.name.toLowerCase().indexOf($query.toLowerCase()) !== -1;
         });
         //return $query ? auto.filter( createFilterFor($query) ) : auto; 
-    }
+    };
     function createFilterFor(query) {
       return function filterFn(data) {
         return (data.name.indexOf(query) === 0);
@@ -164,7 +160,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         $scope.$broadcast('show-errors-check-validity', 'chartForm');
         return false;
       }   
-      Charts.get_chart_data($scope.parameters, $scope.page_no, function(data){
+      Charts.get_chart_data($scope.tabs, $scope.page_no, function(data){
           $scope.chart_data = data;
       });
     };
