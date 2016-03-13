@@ -10,7 +10,7 @@ module.exports = {
         'public/lib/angular-chart.js/dist/angular-chart.css',
         'public/lib/ng-tags-input/ng-tags-input.min.css',
         'public/lib/angular-material/angular-material.min.css',
-
+        'public/lib/angular-ui-tree/dist/angular-ui-tree.min.css'  
       ],
       js: [
         'public/lib/angular/angular.js',
@@ -29,7 +29,8 @@ module.exports = {
         'public/lib/Chart.js/Chart.min.js',
         'public/lib/angular-chart.js/dist/angular-chart.js',
         'public/lib/angular-material/angular-material.min.js',
-        'public/lib/ng-tags-input/ng-tags-input.min.js'  
+        'public/lib/ng-tags-input/ng-tags-input.min.js',
+        'public/lib/angular-ui-tree/dist/angular-ui-tree.js'  
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
     },

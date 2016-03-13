@@ -1,161 +1,135 @@
 <section ng-controller="ArticlesController" ng-init="find()">
-<div class="page-header">
-    <h1>Visualize Data</h1>
-</div>
-<div class="row">
-    <div class="col-md-8">
-       <div class="form-group">
-            <label for="ch_sel">Select a chart type: </label>
-            <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in controls.chart_types">
-            </select>
-        </div>
-    </div>  
-</div>    
-
-<div class="col-md-8">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{ch_sel}} chart</h3>  
-        </div>
-        <div class="panel-body">
-            <canvas id="base" 
-            class="chart-base"
-            chart-type="ch_sel"
-            chart-data="['Bar', 'Line', 'Radar'].indexOf(ch_sel) > -1 ? chart_data.data : chart_data.data[0]"
-            chart-labels="chart_data.labels">
-            </canvas>
-            <div class="col-xs-12">
-            <nav>
-              <ul class="pager">
-                <li class="previous"><a ng-click="decr_page(page_no)"><span>&larr;</span></a></li>
-                  <li>Page 
-                      <input min="1" ng-attr-max="{{chart_data.page_count}}" style="width:10%;" type="number" ng-model="page_no"> 
-                      of {{chart_data.page_count}}
-                  </li>
-                <li class="next"><a ng-click="inc_page(page_no)"><span>&rarr;</span></a></li>
-              </ul>
-            </nav>
+    <div class="page-header">
+        <h1>Visualize Data</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="ch_sel">Select a chart type: </label>
+                <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in controls.chart_types">
+                </select>
             </div>
         </div>
     </div>
-</div>
-    
-<div class="col-md-4">
-<md-content>
-    <md-tabs md-dynamic-height="" md-border-bottom="">
-        <md-tab ng-repeat="tab in tabs" ng-attr-label="{{$index + 1}}">
-  
-    <div class="well">
-        <span ng-if="$index != 0" class="pull-right glyphicon glyphicon-remove" ng-click="remove_tab($event, $index)"></span>
-        <div class="text-center">
-            <legend>Operations</legend>
-        </div>
-        <form class="form-horizontal" ng-submit="get_chart_data(true)" novalidate>
-        <fieldset>
-            <div ng-repeat="parameter in tab.parameters" class="panel panel-primary">
-                
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Operation no. {{$index + 1}}
-                        <span ng-click="remove_parameter($index + 1)" class="pull-right glyphicon glyphicon-remove"></span>
-                    </h3>
-                </div> 
-                
-                <div class="panel-body">
-                      <label for="param">Select operation: </label>
-                      <select class="form-control" 
-                              id="param" 
-                              ng-change="update_operation($index+1, tab.parameters['param' + ($index + 1)].operation)"
-                              ng-model="tab.parameters['param' + ($index + 1)].operation" 
-                              ng-options="option for option in controls.operations">
-                      </select>
-                    <div ng-if="tab.parameters['param' + ($index + 1)].operation != 'Sort' && tab.parameters['param' + ($index + 1)].operation != ''">
-                        <label for="param">Select category: </label>
-                      <select class="form-control" 
-                              id="param" 
-                              ng-change="update_group_data($index+1, tab.parameters['param' + ($index + 1)].category)"
-                              ng-model="tab.parameters['param' + ($index + 1)].category" 
-                              ng-options="option for option in controls.categories">
-                          <option value="">Select...</option>
-                      </select>
-                    </div>
-
-                      
-                    <div ng-if="tab.parameters['param' + ($index + 1)].operation == 'Match'">
-                        <label for="match">Match against: </label>
-                        <tags-input 
-                            ng-model="tab.parameters['param' + ($index + 1)].match" 
-                            display-property="name" placeholder="Add a parameter" 
-                            replace-spaces-with-dashes="false">
-                          <auto-complete source="querySearch($query, auto[tab.parameters['param' + ($index + 1)].category])"
-                                         min-length="0"
-                                         load-on-focus="true"
-                                         load-on-empty="true"
-                                         max-results-to-show="32"
-                                         ></auto-complete>
-                        </tags-input>
-                    </div>
-                    <div ng-if="tab.parameters['param' + ($index + 1)].operation == 'Sort'">
-                        <input type="radio" id="asc" name="direction" value="asc" ng-model="tab.parameters['param' + ($index + 1)].direction">
-              <label for="asc">Ascending</label><br>
-              <input type="radio" id="desc" name="direction" value="desc" ng-model="tab.parameters['param' + ($index + 1)].direction">
-              <label for="desc">Descending</label>
-                    </div>
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ch_sel}} chart</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="base" 
+                    class="chart-base"
+                    chart-type="ch_sel"
+                    chart-data="['Bar', 'Line', 'Radar'].indexOf(ch_sel) > -1 ? chart_data.data : chart_data.data[0]"
+                    chart-labels="chart_data.labels">
+                </canvas>
+                <div class="col-xs-12">
+                    <nav>
+                        <ul class="pager">
+                            <li class="previous"><a ng-click="decr_page(page_no)"><span>&larr;</span></a></li>
+                            <li>Page 
+                                <input min="1" ng-attr-max="{{chart_data.page_count}}" style="width:10%;" type="number" ng-model="page_no"> 
+                                of {{chart_data.page_count}}
+                            </li>
+                            <li class="next"><a ng-click="inc_page(page_no)"><span>&rarr;</span></a></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
-            <div class="pull-left">
-                <md-button ng-click="add_parameter()" class="md-fab md-primary" aria-label="add">
-                    <md-icon class="material-icons">add</md-icon>
-                </md-button>
-            </div>
-            <div class="pull-right">
-                <md-button type="submit" class="md-fab md-success" aria-label="done">
-                    <md-icon class="material-icons">done</md-icon>
-                </md-button>
-            </div>              
-        </fieldset>
-    </form>
+        </div>
     </div>
-        </md-tab>
-        <md-tab ng-click="add_tab()" ng-attr-label="+">
-            
-        </md-tab>
-  <!-- this is the open new tab button -->
-        
-  <button class="btn btn-default" ng-click="add_tab()">+</button>
-    </md-tabs>
-</md-content>
-    
-</div>
-<!--
-<div class="col-xs-12 text-center">
-    <button ng-repeat="operation in operations" class="btn btn-sq-lg btn-default">
-        {{operation}}
-    </button>
-</div>
--->
-<div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
-    No data yet, <a ui-sref="articles.create">import</a>?
-</div>
+    <div class="col-md-4">
+        <md-content>
+            <md-tabs md-dynamic-height="" md-border-bottom="">
+                <md-tab ng-repeat="tab in tabs" ng-attr-label="{{$index + 1}}">
+                    <div class="well">
+                        <span ng-if="$index != 0" class="pull-right glyphicon glyphicon-remove" ng-click="remove_tab($event, $index)"></span>
+                        <div class="text-center">
+                            <legend>Operations</legend>
+                        </div>
+                        <form class="form-horizontal" ng-submit="get_chart_data(true)" novalidate>
+                            <fieldset>
+                                <div ui-tree>
+                                    <ol ui-tree-nodes="" ng-model="tab.parameters">
+                                        <li ng-repeat="parameter in tab.parameters" ui-tree-node>
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading" ui-tree-handle>
+                                                    Operation no. {{$index + 1}}
+                                                    <span data-nodrag ng-click="remove_parameter($index)" class="pull-right glyphicon glyphicon-remove"></span>
+                                                </div>
+                                                
+                                                <div class="panel-body">
+                                                    <label for="param">Select operation: </label>
+                                                    <select class="form-control" 
+                                                        id="param" 
+                                                        ng-change="update_operation($index, tab.parameters[$index].operation)"
+                                                        ng-model="tab.parameters[$index].operation" 
+                                                        ng-options="option for option in controls.operations">
+                                                    </select>
+                                                    <div ng-if="tab.parameters[$index].operation != 'Sort' && tab.parameters[$index].operation != ''">
+                                                        <label for="param">Select category: </label>
+                                                        <select class="form-control" 
+                                                            id="param" 
+                                                            ng-change="update_group_data($index, tab.parameters[$index].category)"
+                                                            ng-model="tab.parameters[$index].category" 
+                                                            ng-options="option for option in controls.categories">
+                                                            <option value="">Select...</option>
+                                                        </select>
+                                                    </div>
+                                                    <div ng-if="tab.parameters[$index].operation == 'Match'">
+                                                        <label for="match">Match against: </label>
+                                                        <tags-input 
+                                                            ng-model="tab.parameters[$index].match" 
+                                                            display-property="name" placeholder="Add a parameter" 
+                                                            replace-spaces-with-dashes="false">
+                                                            <auto-complete source="querySearch($query, auto[tab.parameters[$index].category])"
+                                                                min-length="0"
+                                                                load-on-focus="true"
+                                                                load-on-empty="true"
+                                                                max-results-to-show="32"
+                                                                ></auto-complete>
+                                                        </tags-input>
+                                                    </div>
+                                                    <div ng-if="tab.parameters[$index].operation == 'Sort'">
+                                                        <input type="radio" id="asc" name="direction" value="asc" ng-model="tab.parameters[$index].direction">
+                                                        <label for="asc">Ascending</label><br>
+                                                        <input type="radio" id="desc" name="direction" value="desc" ng-model="tab.parameters[$index].direction">
+                                                        <label for="desc">Descending</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div class="pull-left">
+                                    <md-button ng-click="add_parameter()" class="md-fab md-primary" aria-label="add">
+                                        <md-icon class="material-icons">add</md-icon>
+                                    </md-button>
+                                </div>
+                                <div class="pull-right">
+                                    <md-button type="submit" class="md-fab md-success" aria-label="done">
+                                        <md-icon class="material-icons">done</md-icon>
+                                    </md-button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </md-tab>
+                <md-tab ng-click="add_tab()" ng-attr-label="+">
+                </md-tab>
+                <!-- this is the open new tab button -->
+                <button class="btn btn-default" ng-click="add_tab()">+</button>
+            </md-tabs>
+        </md-content>
+    </div>
     <!--
-    <div notifications-bar class="notifications"></div>
-  <div class="page-header">
-    <h1>Visualize Data</h1>
-  </div>
-  <div class="list-group">
-    <a ng-repeat="article in articles" ui-sref="articles.view({articleId: article._id})" class="list-group-item">
-      <small class="list-group-item-text">
-        Posted on
-        <span ng-bind="article.created | date:'mediumDate'"></span>
-        by
-        <span ng-bind="article.user.displayName"></span>
-      </small>
-      <h4 class="list-group-item-heading" ng-bind="article.title"></h4>
-      <p class="list-group-item-text" ng-bind="article.content"></p>
-    </a>
-  </div>
-  <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
-    No data yet, <a ui-sref="articles.create">import</a>?
-  </div>
--->
+        <div class="col-xs-12 text-center">
+            <button ng-repeat="operation in operations" class="btn btn-sq-lg btn-default">
+                {{operation}}
+            </button>
+        </div>
+        -->
+    <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
+        No data yet, <a ui-sref="articles.create">import</a>?
+    </div>
 </section>

@@ -7,14 +7,14 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 /**
- * Article Schema
+ * Query Schema
  */
 var QuerySchema = new Schema({
   created: {
     type: Date,
     default: Date.now
   },
-  'Query' : {
+  'query' : {
      
   },
   user: {

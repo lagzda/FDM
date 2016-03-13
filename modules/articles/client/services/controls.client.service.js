@@ -6,9 +6,9 @@ angular.module('articles').service('Controls', ['Articles',
         
         this.generate_tab_frame = function(){
             return {
-                parameters: {
-                    'param1' : this.generate_parameter_frame()
-                }
+                parameters: [ 
+                    this.generate_parameter_frame()
+                ]
             };
         };
         
@@ -35,21 +35,18 @@ angular.module('articles').service('Controls', ['Articles',
         
         this.add_parameter = function(parameters){
             var index = Object.keys(parameters).length;
-            parameters['param'+(index+1)] = this.generate_parameter_frame();
+            parameters.push(this.generate_parameter_frame());
         };
         this.remove_parameter = function(parameters, ind){
-            delete parameters['param'+(ind)];
-            for (var i = ind; i < Object.keys(parameters).length + 1; i++){
-                parameters['param'+(i)] = parameters['param'+(i+1)];
-                delete parameters['param'+(i+1)];
-            }
+            console.log(ind);
+            parameters.splice(ind, 1);
         };
         this.update_operation = function(parameters, ind, operation){
             if (operation !== 'Match') {
                 if (operation !== 'Sort'){
-                    parameters['param'+ind].direction = '';
+                    parameters[ind].direction = '';
                 }
-                parameters['param'+ind].match = '';
+                parameters[ind].match = '';
             }
         };
     }
