@@ -10,7 +10,9 @@ module.exports = {
         'public/lib/angular-chart.js/dist/angular-chart.css',
         'public/lib/ng-tags-input/ng-tags-input.min.css',
         'public/lib/angular-material/angular-material.min.css',
-        'public/lib/angular-ui-tree/dist/angular-ui-tree.min.css'  
+        'public/lib/angular-ui-tree/dist/angular-ui-tree.min.css',
+        'public/lib/ng-sortable/dist/ng-sortable.min.css',
+        'public/lib/ng-sortable/dist/ng-sortable.style.css'
       ],
       js: [
         'public/lib/angular/angular.js',
@@ -30,7 +32,8 @@ module.exports = {
         'public/lib/angular-chart.js/dist/angular-chart.js',
         'public/lib/angular-material/angular-material.min.js',
         'public/lib/ng-tags-input/ng-tags-input.min.js',
-        'public/lib/angular-ui-tree/dist/angular-ui-tree.js'  
+        'public/lib/angular-ui-tree/dist/angular-ui-tree.js',
+        'public/lib/ng-sortable/dist/ng-sortable.min.js'  
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
     },

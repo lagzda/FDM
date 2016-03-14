@@ -49,11 +49,11 @@
                         </div>
                         <form class="form-horizontal" ng-submit="get_chart_data(true)" novalidate>
                             <fieldset>
-                                <div ui-tree>
-                                    <ol ui-tree-nodes="" ng-model="tab.parameters">
-                                        <li ng-repeat="parameter in tab.parameters" ui-tree-node>
+                                <div>
+                                    <ul style="padding-left:0;" data-as-sortable="tab.parameters" ng-model="tab.parameters">
+                                        <li ng-repeat="parameter in tab.parameters" data-as-sortable-item>
                                             <div class="panel panel-primary">
-                                                <div class="panel-heading" ui-tree-handle>
+                                                <div class="panel-heading" data-as-sortable-item-handle>
                                                     Operation no. {{$index + 1}}
                                                     <span data-nodrag ng-click="remove_parameter($index)" class="pull-right glyphicon glyphicon-remove"></span>
                                                 </div>
@@ -99,7 +99,7 @@
                                                 </div>
                                             </div>
                                         </li>
-                                    </ol>
+                                    </ul>
                                 </div>
                                 <div class="pull-left">
                                     <md-button ng-click="add_parameter()" class="md-fab md-primary" aria-label="add">
@@ -153,4 +153,5 @@
         No data yet, <a ui-sref="articles.create">import</a>?
         </div>
         -->
+    
 </section>
