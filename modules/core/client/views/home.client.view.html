@@ -2,40 +2,35 @@
     <div class="page-header">
         <h1>Visualize Data</h1>
     </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="form-group">
-                <label for="ch_sel">Select a chart type: </label>
-                <select class="form-control" id="ch_sel" ng-model="ch_sel" ng-options="option for option in controls.chart_types">
-                </select>
-            </div>
-        </div>
-    </div>
     <div class="col-md-8">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ch_sel}} chart</h3>
-            </div>
-            <div class="panel-body">
-                <canvas id="base" 
-                    class="chart-base"
-                    chart-type="ch_sel"
-                    chart-data="['Bar', 'Line', 'Radar'].indexOf(ch_sel) > -1 ? chart_data.data : chart_data.data[0]"
-                    chart-labels="chart_data.labels">
-                </canvas>
-                <div class="col-xs-12">
-                    <nav>
-                        <ul class="pager">
-                            <li class="previous"><a ng-click="decr_page(page_no)"><span>&larr;</span></a></li>
-                            <li>Page 
-                                <input min="1" ng-attr-max="{{chart_data.page_count}}" style="width:10%;" type="number" ng-model="page_no"> 
-                                of {{chart_data.page_count}}
-                            </li>
-                            <li class="next"><a ng-click="inc_page(page_no)"><span>&rarr;</span></a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+                <md-content>
+                    <md-tabs md-dynamic-height="" md-border-bottom="">
+                        <md-tab ng-repeat="chart in controls.chart_types" ng-attr-label="{{chart+' chart'}}">
+                            <div class="panel-body">
+                                <canvas id="base" 
+                                    class="chart-base"
+                                    chart-type="chart"
+                                    chart-data="['Bar', 'Line', 'Radar'].indexOf(chart) > -1 ? chart_data.data : chart_data.data[0]"
+                                    chart-labels="chart_data.labels">
+                                </canvas>
+                                <div class="col-xs-12">
+                                    <nav>
+                                        <ul class="pager">
+                                            <li class="previous"><a ng-click="decr_page(page_no)"><span>&larr;</span></a></li>
+                                            <li>Page 
+                                                <input min="1" ng-attr-max="{{chart_data.page_count}}" style="width:10%;" type="number" ng-model="page_no"> 
+                                                of {{chart_data.page_count}}
+                                            </li>
+                                            <li class="next"><a ng-click="inc_page(page_no)"><span>&rarr;</span></a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>  
+                        </md-tab>
+                    </md-tabs>
+                </md-content>
+            
         </div>
     </div>
     <div class="col-md-4">
