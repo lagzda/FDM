@@ -10,10 +10,6 @@ angular.module('articles').config(['$stateProvider',
         url: '/articles',
         template: '<ui-view/>'
       })
-      .state('articles.list', {
-        url: '',
-        templateUrl: 'modules/articles/client/views/list-articles.client.view.html'
-      })
       .state('articles.create', {
         url: '/create',
         templateUrl: 'modules/articles/client/views/create-article.client.view.html',
