@@ -1,6 +1,8 @@
 <section ng-controller="ArticlesController" ng-init="find()">
-    <div class="page-header">
-        <h1>Visualize Data</h1>
+    <div class="row page-header text-center">
+        <div class="col-xs-2 col-xs-offset-5">
+            <img class="img img-responsive" src="/modules/core/client/img/FDM_Logo.JPG">
+        </div>
     </div>
     <div class="col-md-8">
         <div class="panel panel-default">
@@ -34,10 +36,11 @@
         </div>
     </div>
     <div class="col-md-4">
+        <div class="panel panel-default">
         <md-content>
             <md-tabs md-dynamic-height="" md-border-bottom="">
                 <md-tab ng-repeat="tab in tabs" ng-attr-label="{{$index + 1}}">
-                    <div class="well">
+                    <div class="panel-body">
                         <span ng-if="$index != 0" class="pull-right glyphicon glyphicon-remove" ng-click="remove_tab($event, $index)"></span>
                         <div class="text-center">
                             <legend>Operations</legend>
@@ -116,6 +119,7 @@
                 <button class="btn btn-default" ng-click="add_tab()">+</button>
             </md-tabs>
         </md-content>
+    </div>
     </div>
     <!--
         <div class="col-xs-12 text-center">
