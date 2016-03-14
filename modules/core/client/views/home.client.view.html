@@ -7,7 +7,7 @@
     <div class="col-md-8">
         <div class="panel panel-default">
                 <md-content>
-                    <md-tabs md-dynamic-height="" md-border-bottom="">
+                    <md-tabs md-swipe-content="true" md-dynamic-height="" md-border-bottom="">
                         <md-tab ng-repeat="chart in controls.chart_types" ng-attr-label="{{chart+' chart'}}">
                             <div class="panel-body">
                                 <canvas id="base" 
@@ -38,7 +38,7 @@
     <div class="col-md-4">
         <div class="panel panel-default">
         <md-content>
-            <md-tabs md-dynamic-height="" md-border-bottom="">
+            <md-tabs md-swipe-content="true" md-dynamic-height="" md-border-bottom="">
                 <md-tab ng-repeat="tab in tabs" ng-attr-label="{{$index + 1}}">
                     <div class="panel-body">
                         <span ng-if="$index != 0" class="pull-right glyphicon glyphicon-remove" ng-click="remove_tab($event, $index)"></span>

@@ -79,4 +79,16 @@ a:hover .header-profile-image {
 .navbar-inverse .navbar-brand {
     color: white;
 }
+body{
+    
+}
+.as-sortable-item, .as-sortable-placeholder {
+    min-height: 20px;
+    margin: 1px 2px 5px 1px;
+    border-radius: 5px;
+}
+
+.as-sortable-item {
+    
+}
 
