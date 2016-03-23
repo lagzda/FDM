@@ -25,9 +25,8 @@ var ArticleSchema = new Schema({
     trim: true
   },
     'End Date': {
-    type: String,
-    default: '',
-    trim: true
+    type: Date,
+    default: ''
   },
     'FDM Office': {
     type: String,
@@ -55,9 +54,8 @@ var ArticleSchema = new Schema({
     trim: true
   },
     'Start Date': {
-    type: String,
-    default: '',
-    trim: true
+    type: Date,
+    default: ''
   },
     'Stream Trained': {
     type: String,

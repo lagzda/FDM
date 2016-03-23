@@ -38,54 +38,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     $scope.remove_parameter = function(ind){
         Controls.remove_parameter(this.tab.parameters, ind);
     };
-      $scope.data = [{
-        'id': 1,
-        'title': 'node1',
-        'nodes': [
-          {
-            'id': 11,
-            'title': 'node1.1',
-            'nodes': [
-              {
-                'id': 111,
-                'title': 'node1.1.1',
-                'nodes': []
-              }
-            ]
-          },
-          {
-            'id': 12,
-            'title': 'node1.2',
-            'nodes': []
-          }
-        ]
-      }, {
-        'id': 2,
-        'title': 'node2',
-        'nodrop': true, // An arbitrary property to check in custom template for nodrop-enabled
-        'nodes': [
-          {
-            'id': 21,
-            'title': 'node2.1',
-            'nodes': []
-          },
-          {
-            'id': 22,
-            'title': 'node2.2',
-            'nodes': []
-          }
-        ]
-      }, {
-        'id': 3,
-        'title': 'node3',
-        'nodes': [
-          {
-            'id': 31,
-            'title': 'node3.1',
-            'nodes': []
-          }
-        ]
-      }];
+    
       
     //PAGINATION RELATED
     $scope.decr_page = function(page_no){
@@ -107,8 +60,12 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     //GET AUTO COMPLETE DATA FOR MATCH AGAINST
     $scope.update_group_data = function(ind, sel){
         Charts.localSearch(sel, function(result){
+            if (sel === 'Start Date' || sel === 'End Date'){
+                result = result.map(function(myDate){
+                    return {name: myDate.name.slice(0,10)};
+                })
+            }
             $scope.auto[sel] = result;
-            //this.tab.parameters['param'+ind].auto = result;
         });  
     };
     //FILTERING FUNCTION FOR AUTOCOMPLETE
@@ -116,14 +73,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         return auto.filter(function(item){
             return item.name.toLowerCase().indexOf($query.toLowerCase()) !== -1;
         });
-        //return $query ? auto.filter( createFilterFor($query) ) : auto; 
     };
-    function createFilterFor(query) {
-      return function filterFn(data) {
-        return (data.name.indexOf(query) === 0);
-      };
-    }
-      
       
     // Import data
     $scope.create = function (isValid) {
@@ -133,17 +83,17 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
       if (!isValid) {
         // Basically just throw error  
         $scope.$broadcast('show-errors-check-validity', 'articleForm');
+        notifications.showError({message: 'There was an error uploading the file. Please try again!'});
         return false;
       }
       // If the form is valid perform the upload - send file and title to backend    
       Upload.upload({
             url: 'api/articles',
-            data: {file: $scope.file, 
-                   title: this.title 
+            data: {file: $scope.file 
                   }
         }).then(function (response) {
             // SUCCESS CALLBACK
-            $state.go('articles.list');
+            $state.go('home');
             notifications.showSuccess({message: 'The file has been successfully uploaded!'});
         }, function (errorResponse) {
             // ERROR CALLBACK - shown in the html view if error appears

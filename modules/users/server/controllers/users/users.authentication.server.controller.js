@@ -9,6 +9,9 @@ var path = require('path'),
   passport = require('passport'),
   User = mongoose.model('User');
 
+var ActiveDirectory = require('activedirectory');
+
+
 // URLs for which user can't be redirected on signin
 var noReturnUrls = [
   '/authentication/signin',
@@ -56,6 +59,39 @@ exports.signup = function (req, res) {
  * Signin after passport authentication
  */
 exports.signin = function (req, res, next) {
+    var username = 'uid=gauss,dc=example,dc=com';
+    var password = 'password';
+    var config = { 
+        url: 'ldap://ldap.forumsys.com',
+        port: '389',
+        baseDN: 'dc=example,dc=com'}
+    var ad = new ActiveDirectory(config);
+    
+    console.log(ad);
+ad.authenticate(username, password, function(err, auth) {
+  if (err) {
+    console.log('ERROR: '+JSON.stringify(err));
+    return;
+  }
+  ad.opts.bindDN = username;
+  ad.opts.bindCredentials = password;
+  if (auth) {
+    var query = 'uid=gauss';
+    console.log('Authenticated!');
+    ad.find(query, function(err, results) {
+      if ((err) || (! results)) {
+        console.log('ERROR: ' + JSON.stringify(err));
+        return;
+      }
+      console.log(results);
+    
+});
+  }
+  else {
+    console.log('Authentication failed!');
+  }
+});
+    
   passport.authenticate('local', function (err, user, info) {
     if (err || !user) {
       res.status(400).send(info);
@@ -103,22 +139,26 @@ exports.oauthCall = function (strategy, scope) {
  */
 exports.oauthCallback = function (strategy) {
   return function (req, res, next) {
+      console.log("Callback");
     // Pop redirect URL from session
     var sessionRedirectURL = req.session.redirect_to;
     delete req.session.redirect_to;
+      console.log("Callback2");
 
     passport.authenticate(strategy, function (err, user, redirectURL) {
       if (err) {
-        return res.redirect('/authentication/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
+                console.log(err);
+
+        //return res.redirect('/authentication/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
       }
       if (!user) {
         return res.redirect('/authentication/signin');
+          
       }
       req.login(user, function (err) {
         if (err) {
           return res.redirect('/authentication/signin');
         }
-
         return res.redirect(redirectURL || sessionRedirectURL || '/');
       });
     })(req, res, next);
@@ -129,7 +169,10 @@ exports.oauthCallback = function (strategy) {
  * Helper function to save or update a OAuth user profile
  */
 exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
+    console.log("SAVE");
   if (!req.user) {
+      
+
     // Define a search query fields
     var searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
     var searchAdditionalProviderIdentifierField = 'additionalProvidersData.' + providerUserProfile.provider + '.' + providerUserProfile.providerIdentifierField;
@@ -180,7 +223,6 @@ exports.saveOAuthUserProfile = function (req, providerUserProfile, done) {
   } else {
     // User is already logged in, join the provider data to the existing user
     var user = req.user;
-
     // Check if user exists, is not signed in using this provider, and doesn't have that provider data already configured
     if (user.provider !== providerUserProfile.provider && (!user.additionalProvidersData || !user.additionalProvidersData[providerUserProfile.provider])) {
       // Add the provider data to the additional provider data field

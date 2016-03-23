@@ -34,6 +34,10 @@ module.exports = {
   app: {
     title: defaultEnvConfig.app.title + ' - Development Environment'
   },
+  azure: {
+    clientID: 'a635e7d4-ee39-4e18-a27f-d22a6b253525',
+    callbackURL: '/api/auth/azure/callback'
+  },
   facebook: {
     clientID: process.env.FACEBOOK_ID || 'APP_ID',
     clientSecret: process.env.FACEBOOK_SECRET || 'APP_SECRET',

@@ -1,30 +1,14 @@
-<section ng-controller="ArticlesController">
-  <div class="page-header">
-    <h1>Import Database</h1>
-  </div>
-  <div class="col-md-12">
-    <form name="articleForm" class="form-horizontal" ng-submit="create(articleForm.$valid)" novalidate>
-      <fieldset>
-        <div class="form-group" show-errors>
-          <label for="title">Title</label>
-          <input name="title" type="text" ng-model="title" id="title" class="form-control" placeholder="Title" required>
-          <div ng-messages="articleForm.title.$error" role="alert">
-            <p class="help-block error-text" ng-message="required">Data title is required.</p>
-          </div>
-        </div>
-          <div class="form-group" show-errors>
-            <div class="btn btn-default" ngf-select ng-model="file" name="file" ngf-pattern="'.xls,.csv,.xlsx'" accept=".xls,.csv,.xlsx" ngf-max-size="20MB" required>Select file</div> 
-              <div ng-messages="articleForm.file.$error" role="alert">
-            <p class="help-block error-text" ng-message="required">Input file is required.</p>
-          </div>
-          </div>
-        <div class="form-group">
-          <input type="submit" class="btn btn-success">
-        </div>
-        <div ng-show="error" class="text-danger">
-          <strong ng-bind="error"></strong>
-        </div>
-      </fieldset>
-    </form>
-  </div>
-</section>
+<md-content layout="column" layout-padding layout-margin layout-align="center center" ng-controller="ArticlesController">
+    <div class="md-whiteframe-z2" layout-fill layout="column" layout-align="center center">
+        <h1>Import Database</h1>
+        <form layout="column" layout-fill layout-align="center center" flex name="articleForm" ng-submit="create(articleForm.$valid)" novalidate>
+            <md-button class="md-fab md-primary" ngf-select ng-model="file" name="file" ngf-pattern="'.xls,.csv,.xlsx'" accept=".xls,.csv,.xlsx" ngf-max-size="20MB" required>
+                <md-icon class="material-icons">file_upload</md-icon>
+            </md-button>            
+            {{file.name || 'NO FILE SELECTED'}}
+            <md-input-container>
+                <md-button type="submit" class="md-raised md-success">Submit</md-button>
+            </md-input-container>
+        </form>
+    </div>
+</md-content>

@@ -1,5 +1,5 @@
-<section ng-controller="ArticlesController" ng-init="find()">
-    <div class="row page-header text-center">
+<md-content layout-padding ng-controller="ArticlesController" ng-init="find()">
+    <div class="text-center">
         <div class="col-xs-2 col-xs-offset-5">
             <img class="img img-responsive" src="/modules/core/client/img/FDM_Logo.JPG">
         </div>
@@ -48,12 +48,12 @@
                         <form class="form-horizontal" ng-submit="get_chart_data(true)" novalidate>
                             <fieldset>
                                 <div>
-                                    <ul style="padding-left:0;" data-as-sortable="tab.parameters" ng-model="tab.parameters">
+                                    <ul style="padding-left:0;" data-as-sortable="" ng-model="tab.parameters">
                                         <li ng-repeat="parameter in tab.parameters" data-as-sortable-item>
                                             <div class="panel panel-primary">
                                                 <div class="panel-heading" data-as-sortable-item-handle>
                                                     Operation no. {{$index + 1}}
-                                                    <span data-nodrag ng-click="remove_parameter($index)" class="pull-right glyphicon glyphicon-remove"></span>
+                                                    <span no-drag ng-click="remove_parameter($index)" class="pull-right glyphicon glyphicon-remove"></span>
                                                 </div>
                                                 
                                                 <div class="panel-body">
@@ -77,11 +77,12 @@
                                                     <div ng-if="tab.parameters[$index].operation == 'Match'">
                                                         <label for="match">Match against: </label>
                                                         <tags-input 
-                                                            ng-model="tab.parameters[$index].match" 
-                                                            display-property="name" placeholder="Add a parameter" 
+                                                            ng-model="tab.parameters[$index].match"
+                                                            min-length="0"        
+                                                            display-property="name"
+                                                            placeholder="Add a parameter" 
                                                             replace-spaces-with-dashes="false">
                                                             <auto-complete source="querySearch($query, auto[tab.parameters[$index].category])"
-                                                                min-length="0"
                                                                 load-on-focus="true"
                                                                 load-on-empty="true"
                                                                 max-results-to-show="32"
@@ -130,27 +131,5 @@
         -->
     <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
         No data yet, <a ui-sref="articles.create">import</a>?
-    </div>
-    <!--
-        <div notifications-bar class="notifications"></div>
-        <div class="page-header">
-        <h1>Visualize Data</h1>
-        </div>
-        <div class="list-group">
-        <a ng-repeat="article in articles" ui-sref="articles.view({articleId: article._id})" class="list-group-item">
-          <small class="list-group-item-text">
-            Posted on
-            <span ng-bind="article.created | date:'mediumDate'"></span>
-            by
-            <span ng-bind="article.user.displayName"></span>
-          </small>
-          <h4 class="list-group-item-heading" ng-bind="article.title"></h4>
-          <p class="list-group-item-text" ng-bind="article.content"></p>
-        </a>
-        </div>
-        <div class="alert alert-warning text-center" ng-if="articles.$resolved && !articles.length">
-        No data yet, <a ui-sref="articles.create">import</a>?
-        </div>
-        -->
-    
-</section>
+    </div>    
+</md-content>

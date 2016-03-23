@@ -14,11 +14,13 @@ var passport = require('passport'),
 module.exports = function (app, db) {
   // Serialize sessions
   passport.serializeUser(function (user, done) {
+      console.log(user);
     done(null, user.id);
   });
 
   // Deserialize sessions
   passport.deserializeUser(function (id, done) {
+      console.log("HUH?", id);
     User.findOne({
       _id: id
     }, '-salt -password', function (err, user) {

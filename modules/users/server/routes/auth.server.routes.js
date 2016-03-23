@@ -18,7 +18,13 @@ module.exports = function (app) {
   app.route('/api/auth/signup').post(users.signup);
   app.route('/api/auth/signin').post(users.signin);
   app.route('/api/auth/signout').get(users.signout);
-
+  
+    
+      
+  // Setting up the azure oauth routes    
+  app.route('/api/auth/azure').get(users.oauthCall('azuread-openidconnect'));
+  app.route('/api/auth/azure/callback').post(users.oauthCallback('azuread-openidconnect'));
+  
   // Setting the facebook oauth routes
   app.route('/api/auth/facebook').get(users.oauthCall('facebook', {
     scope: ['email']
