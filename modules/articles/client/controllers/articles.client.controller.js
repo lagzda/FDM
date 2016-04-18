@@ -2,7 +2,7 @@
 
 // Articles controller
 angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 'Charts', 'Controls',
-  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts, Controls) {
+  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts, Controls) {  
     $scope.authentication = Authentication;
     // AUTO COMPLETE STORE AND CACHE  
     $scope.auto = {};
@@ -24,11 +24,14 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     //ADD TAB
     $scope.add_tab = function(){
         Controls.add_tab($scope.tabs);
+        $scope.selectedTab = Object.keys($scope.tabs).length - 1;
+
     };  
     //DELETE TAB
     $scope.remove_tab = function(event, ind){
         event.preventDefault();
-        Controls.remove_tab($scope.tabs, ind);
+        Controls.remove_tab($scope.tabs, ind + 1);
+        $scope.selectedTab = Object.keys($scope.tabs).length - 1;
     };  
     //ADD PARAMETER
     $scope.add_parameter = function(){
@@ -37,9 +40,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     //DELETE PARAMETER
     $scope.remove_parameter = function(ind){
         Controls.remove_parameter(this.tab.parameters, ind);
-    };
-    
-      
+    }; 
     //PAGINATION RELATED
     $scope.decr_page = function(page_no){
         if (page_no > 1){

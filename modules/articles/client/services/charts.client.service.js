@@ -79,6 +79,7 @@ angular.module('articles').service('Charts', ['Articles',
             }
             Articles.query({parameters: args_object, page: page}, function(result) {
                 var result = result[0];
+                console.log(result);
                 var page_count = result.page_count;
                 var map_res = result.results[0];
                 var values = [];

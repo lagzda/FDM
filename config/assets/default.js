@@ -33,7 +33,7 @@ module.exports = {
         'public/lib/angular-material/angular-material.min.js',
         'public/lib/ng-tags-input/ng-tags-input.min.js',
         'public/lib/angular-ui-tree/dist/angular-ui-tree.js',
-        'public/lib/ng-sortable/dist/ng-sortable.min.js'  
+        'public/lib/ng-sortable/dist/ng-sortable.js'  
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
     },

@@ -27,6 +27,7 @@ angular.module('articles').service('Controls', ['Articles',
         };
         this.remove_tab = function(tabs, ind){
             delete tabs['tab'+(ind)];
+            console.log(tabs);
             for (var i = ind; i < Object.keys(tabs).length + 1; i++){
                 tabs['tab'+(i)] = tabs['tab'+(i+1)];
                 delete tabs['tab'+(i+1)];

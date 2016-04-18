@@ -137,6 +137,7 @@ exports.list = function (req, res) {
         var j_parameters = JSON.parse(req.query.parameters);
         if (Object.keys(j_parameters).length !== 0){
             var results = [];
+            console.log(j_parameters);
             helpers.aggregate_recursive(1, j_parameters, [], function(result){
                 var page_count = Math.ceil(helpers.count(result)/page_size);
                 var f_result = helpers.limit_results(result, page_size, page_no);

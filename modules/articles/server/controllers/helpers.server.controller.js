@@ -67,7 +67,8 @@ function aggregate(parameters, callback){
             match.$match[parameters[key].category] = {};
             var values = parameters[key].match.map(function(i){
                 if (parameters[key].category === 'Start Date' || parameters[key].category === 'End Date'){
-                    return new Date(i.name);
+                    console.log(new Date(i.name).toISOString());
+                    return new Date(i.name).toISOString();
                 } else {
                     return i.name;
                 }
@@ -87,6 +88,7 @@ function aggregate(parameters, callback){
             }
             if (final_values.length !== 0){
                 match.$match[parameters[key].category].$in = final_values;
+                console.log(final_values);
             } 
         } else {
             if (parameters[key].operation === 'Sort'){
@@ -116,7 +118,7 @@ function aggregate(parameters, callback){
     aggregation.push(group);
     aggregation.push(sort);
     
-    console.log(aggregation);
+    console.log(aggregation[0]);
     Article.aggregate(aggregation, function (err, result) {
         Article.aggregate(aggregation, function (err, result) {
             callback(err, result);

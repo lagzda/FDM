@@ -38,10 +38,10 @@
     <div class="col-md-4">
         <div class="panel panel-default">
         <md-content>
-            <md-tabs md-swipe-content="true" md-dynamic-height="" md-border-bottom="">
+            <md-tabs md-autoselect="false" md-selected="selectedTab" md-swipe-content="true" md-dynamic-height="" md-border-bottom="">
                 <md-tab ng-repeat="tab in tabs" ng-attr-label="{{$index + 1}}">
                     <div class="panel-body">
-                        <span ng-if="$index != 0" class="pull-right glyphicon glyphicon-remove" ng-click="remove_tab($event, $index)"></span>
+                        <span ng-if="tabs.length != 1" class="pull-right glyphicon glyphicon-remove" ng-click="remove_tab($event, $index)"></span>
                         <div class="text-center">
                             <legend>Operations</legend>
                         </div>
@@ -114,10 +114,9 @@
                         </form>
                     </div>
                 </md-tab>
-                <md-tab ng-click="add_tab()" ng-attr-label="+">
+                <md-tab md-on-select="add_tab()" ng-attr-label="+">
                 </md-tab>
                 <!-- this is the open new tab button -->
-                <button class="btn btn-default" ng-click="add_tab()">+</button>
             </md-tabs>
         </md-content>
     </div>
