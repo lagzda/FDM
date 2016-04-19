@@ -28,6 +28,7 @@
     "busboy-body-parser": "0.0.10",
     "cfenv": "~1.0.0",
     "chalk": "^1.1.0",
+    "checksum": "^0.1.1",
     "compression": "^1.5.0",
     "connect-flash": "~0.1.1",
     "connect-mongo": "~0.8.1",

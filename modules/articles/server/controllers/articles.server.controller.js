@@ -12,10 +12,11 @@ var path = require('path'),
   config = require(path.resolve('./config/config')),
   helpers = require('./helpers.server.controller'),    
   Article = mongoose.model('Article'),
+  checksum = require('checksum'),    
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
- * Create a article
+ * Import the data
  */
 exports.create = function (req, res) {
     // Get the file from request
@@ -44,32 +45,42 @@ exports.create = function (req, res) {
         if (err) {
             return res.status(400).send('Data is not saved:');   
         }
-        // When file is written parse the file into json
-        xlsxj({
-          input: destPath, 
-          output: null
-        }, 
-        function(err, result) {
-          if(err) {
-              return res.status(400).send('Data is not saved: ');
-          } 
-          else {
-              var DataList = [];
-              result.forEach(function(doc){
-                  doc.url = destPath;
-                  doc["Start Date"] = new Date(doc["Start Date"]);
-                  doc["End Date"] = new Date(doc["End Date"]);
-                  DataList.push(doc); 
-              });
-              Article.collection.insert(DataList, {}, function(){
-                  if (err){
+        helpers.readFiles(destPath, function(sum){
+            if (!sum){
+                fs.unlink(destPath, function(err){
+                   if (err) throw err; 
+                   return res.status(400).send('This data is already imported!');   
+                });
+            }
+            else {
+                xlsxj({
+                  input: destPath, 
+                  output: null
+                }, 
+                function(err, result) {
+                  if(err) {
                       return res.status(400).send('Data is not saved: ');
-                  } else {  
-                      res.status(200).send();
+                  } 
+                  else {
+                      var DataList = [];
+                      result.forEach(function(doc){
+                          doc.url = destPath;
+                          doc.sum = sum;
+                          doc["Start Date"] = new Date(doc["Start Date"]);
+                          doc["End Date"] = new Date(doc["End Date"]);
+                          DataList.push(doc); 
+                      });
+                      Article.collection.insert(DataList, {}, function(){
+                          if (err){
+                              return res.status(400).send('Data is not saved: ');
+                          } else {  
+                              res.status(200).send();
+                          }
+                      });
                   }
-              });
-          }
-        });  
+                });    
+            }  
+        });
     });	      
 };
 

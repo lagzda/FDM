@@ -98,9 +98,8 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
             notifications.showSuccess({message: 'The file has been successfully uploaded!'});
         }, function (errorResponse) {
             // ERROR CALLBACK - shown in the html view if error appears
-    
             $scope.error = errorResponse.data.message;
-            notifications.showError({message: 'There was an error uploading the file. Please try again!'});
+            notifications.showError({message: 'There was an error uploading the file. Please try again!\n Error: '+ errorResponse.data});
       
         });    
     };

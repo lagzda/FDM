@@ -2,6 +2,8 @@ var path = require('path'),
   mongoose = require('mongoose'),
   config = require(path.resolve('./config/config')),
   Article = mongoose.model('Article'),
+  fs = require('fs'),
+  checksum = require('checksum'),    
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 exports.aggregate_recursive = aggregate_recursive;
@@ -9,6 +11,8 @@ exports.aggregate = aggregate;
 exports.distinct = distinct;
 exports.count = count;
 exports.limit_results = limit_results;
+
+exports.readFiles = readFiles;
 
 function count (values){
     var page_count = 0;
@@ -67,8 +71,11 @@ function aggregate(parameters, callback){
             match.$match[parameters[key].category] = {};
             var values = parameters[key].match.map(function(i){
                 if (parameters[key].category === 'Start Date' || parameters[key].category === 'End Date'){
-                    console.log(new Date(i.name).toISOString());
-                    return new Date(i.name).toISOString();
+                    if (reserved[i.name] !== undefined){
+                        return i.name;
+                    } else {
+                        return new Date(i.name);
+                    }
                 } else {
                     return i.name;
                 }
@@ -88,7 +95,6 @@ function aggregate(parameters, callback){
             }
             if (final_values.length !== 0){
                 match.$match[parameters[key].category].$in = final_values;
-                console.log(final_values);
             } 
         } else {
             if (parameters[key].operation === 'Sort'){
@@ -120,8 +126,22 @@ function aggregate(parameters, callback){
     
     console.log(aggregation[0]);
     Article.aggregate(aggregation, function (err, result) {
-        Article.aggregate(aggregation, function (err, result) {
+        console.log(result);
             callback(err, result);
-        });
     }); 
 }
+
+  
+function readFiles(against, callback) {
+    checksum.file(against, function (err, sum) {
+        var current = sum;
+        Article.find({ 'sum': sum }, function (err, docs) {
+            if (docs.length < 1){
+                callback(sum);
+            } else {
+                callback(null);
+            }
+        });
+        
+    }) 
+};
