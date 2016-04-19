@@ -1,4 +1,4 @@
-<md-content layout-padding ng-controller="ArticlesController" ng-init="find()">
+<md-content style="overflow-x: hidden;" layout-padding ng-controller="ArticlesController" ng-init="find()">
     <div class="text-center row">
         <div class="col-xs-2 col-xs-offset-5">
             <img class="img img-responsive" src="/modules/core/client/img/FDM_Logo.JPG">
@@ -100,13 +100,14 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="pull-left">
-                                    <md-button ng-click="add_parameter()" class="md-fab md-primary" aria-label="add">
+                                <div class="text-center">
+                                    <md-button ng-click="add_parameter()" class="pull-left md-fab md-primary" aria-label="add">
                                         <md-icon class="material-icons">add</md-icon>
                                     </md-button>
-                                </div>
-                                <div class="pull-right">
-                                    <md-button type="submit" class="md-fab md-success" aria-label="done">
+                                    <md-button style="background-color: #2baf2b" ng-click="showPrompt($event, tab)" class="md-fab">
+                                        <md-icon class="material-icons">save</md-icon>
+                                    </md-button>
+                                    <md-button type="submit" class="pull-right md-fab" aria-label="done">
                                         <md-icon class="material-icons">done</md-icon>
                                     </md-button>
                                 </div>
@@ -120,6 +121,9 @@
             </md-tabs>
         </md-content>
     </div>
+    </div>
+    <div class="row text-center">
+        <md-button style="position:fixed; bottom:0; right: 0;" type="button" class="md-fab" ng-click="showGridBottomSheet()">?</md-button>
     </div>
     <!--
         <div class="col-xs-12 text-center">

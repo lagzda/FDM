@@ -14,7 +14,11 @@ var QuerySchema = new Schema({
     type: Date,
     default: Date.now
   },
-  'query' : {
+  name: {
+      type: String,
+      default: 'Custom query'
+  },  
+  query : {
      
   },
   user: {

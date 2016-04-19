@@ -13,7 +13,20 @@ var path = require('path'),
  * Create a query
  */
 exports.create = function (req, res) {
-    //TODO   
+        console.log(req.body);
+        var query = new Query;
+        query.name = req.body.name;
+        query.query = req.body.query;
+        query.user = req.body.user;
+        query.save(function (err) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          res.status(200).send();
+        }
+      });
 };
 
 /**
@@ -64,7 +77,10 @@ exports.delete = function (req, res) {
  * List of Queries
  */
 exports.list = function (req, res) {
-    //TODO
+    Query.find(function(err, queries){
+        console.log(queries);
+        res.json(queries);
+    })
 };
 
 /**

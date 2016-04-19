@@ -1,8 +1,8 @@
 'use strict';
 
 // Queries controller
-angular.module('queries').controller('QueriesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Queries', 
-  function ($scope, $state, $stateParams, $location, Authentication, Queries) {
+angular.module('queries').controller('QueriesController', ['$scope','$state', '$stateParams', '$location', '$mdBottomSheet', 'Authentication', 'Queries', 
+  function ($scope, $state, $stateParams, $location, $mdBottomSheet, Authentication, Queries) {
     $scope.authentication = Authentication;
       
       
@@ -48,7 +48,8 @@ angular.module('queries').controller('QueriesController', ['$scope','$state', '$
     
     // Find a list of Queries
     $scope.find = function () {
-      $scope.queries = Queries.get();
+      $scope.queries = Queries.query();
+        console.log($scope.queries);
     };
 
     // Find existing Query
@@ -57,5 +58,9 @@ angular.module('queries').controller('QueriesController', ['$scope','$state', '$
         queryId: $stateParams.queryId
       });
     };
+    $scope.listItemClick = function($index) {
+        var clickedItem = $index;
+        $mdBottomSheet.hide(clickedItem);
+    };  
   }
 ]);

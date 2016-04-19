@@ -1,8 +1,8 @@
 'use strict';
 
 // Articles controller
-angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', 'Charts', 'Controls',
-  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, Charts, Controls) {  
+angular.module('articles').controller('ArticlesController', ['$scope','$state', '$stateParams', '$location', 'Authentication', 'Articles', 'Upload', 'notifications', '$mdDialog', '$mdBottomSheet', 'Charts', 'Controls', 'Queries',
+  function ($scope, $state, $stateParams, $location, Authentication, Articles, Upload, notifications, $mdDialog, $mdBottomSheet, Charts, Controls, Queries) {  
     $scope.authentication = Authentication;
     // AUTO COMPLETE STORE AND CACHE  
     $scope.auto = {};
@@ -76,6 +76,44 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         });
     };
       
+      
+    //OPEN MODAL TO SAVE QUERY
+    $scope.showPrompt = function(ev, tab) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.prompt()
+          .title('What would you like to name your query?')
+          .textContent('You cannot update the query once it is saved however you can create a new one using this as a template')
+          .placeholder('Query name')
+          .ariaLabel('Query name')
+          .targetEvent(ev)
+          .ok('Okay!')
+          .cancel('Cancel');
+    $mdDialog.show(confirm).then(function(result) {
+        console.log();
+      Queries.save({user: user.id, query: tab, name: result}, function(results){
+          
+      })    
+      $scope.status = 'You decided to name your dog ' + result + '.';
+    }, function() {
+      console.log("Didn't save");
+    });
+    };
+      
+      
+    // OPEN BOTTOM SHEET TO SELECT QUERIES
+    $scope.showGridBottomSheet = function() {
+        $scope.alert = '';
+        console.log("WOOWOWOWOW");
+        $mdBottomSheet.show({
+        template: '<md-bottom-sheet ng-init="find()" class="md-grid md-has-header"><md-subheader>Select query</md-subheader><md-list><md-list-item ng-repeat="query in queries"><md-button class="md-grid-item-content" ng-click="listItemClick($index)"><div class="md-grid-text"> {{ query.name }} </div></md-button></md-list-item></md-list></md-bottom-sheet>',          
+        controller: 'QueriesController',
+          clickOutsideToClose: false
+        }).then(function(clickedItem) {
+          console.log("done");
+        });
+      };
+      
+      
     // Import data
     $scope.create = function (isValid) {
       // At the beginning there are no errors    
@@ -143,10 +181,6 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     // Find a list of Articles
     $scope.find = function () {
       Charts.get_chart_data(function(data){
-          console.log(data);
-          if(!data){
-              notifications.showError({message: 'No data available for this query!'});
-          }
           $scope.chart_data = data;
       }); 
     };
@@ -176,3 +210,4 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     };
   }
 ]);
+
