@@ -143,6 +143,10 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
     // Find a list of Articles
     $scope.find = function () {
       Charts.get_chart_data(function(data){
+          console.log(data);
+          if(!data){
+              notifications.showError({message: 'No data available for this query!'});
+          }
           $scope.chart_data = data;
       }); 
     };
@@ -158,6 +162,10 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
       }   
       Charts.get_chart_data($scope.tabs, $scope.page_no, function(data){
           $scope.chart_data = data;
+          if ($scope.page_no > data.page_count){
+            $scope.page_no = 1;
+            $scope.get_chart_data(true);  
+          }
       });
     };
     // Find existing Article

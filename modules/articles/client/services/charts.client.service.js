@@ -78,32 +78,41 @@ angular.module('articles').service('Charts', ['Articles',
                 page = arguments[1] || 1;
             }
             Articles.query({parameters: args_object, page: page}, function(result) {
-                var result = result[0];
-                console.log(result);
-                var page_count = result.page_count;
-                var map_res = result.results[0];
-                var values = [];
-                var labels = [];
-                result.results.forEach(function(map_res){
-                    labels = map_res.map(function(i){
-                    if (i._id.length > 15){
-                        return i._id.slice(0,15) + '...';
-                    }
-                    return i._id;
-                    });
-                    var temp_values = map_res.map(function (i){
-                        return i.value;   
-                    });
+                var result = result[0],
+                    page_count = result.page_count,
+                    map_res = result.results[0],
+                    values = [],
+                    labels = [],
+                    chart_data;
+                if (page_count === 0){
+                    chart_data = {
+                        labels : ["No data available"],
+                        data : [[0]],
+                        series : ['Temporary'],
+                        page_count : 1
+                    };
+                } else {
+                    result.results.forEach(function(map_res){
+                        labels = map_res.map(function(i){
+                        if (i._id.length > 15){
+                            return i._id.slice(0,15) + '...';
+                        }
+                        return i._id;
+                        });
+                        var temp_values = map_res.map(function (i){
+                            return i.value;   
+                        });
+
+                        values.push(temp_values);
                     
-                    values.push(temp_values);
-                    
-                });
-                var chart_data = {
-                    labels : labels,
-                    data : values,
-                    series : ['Temporary'],
-                    page_count : page_count
-                };
+                    });
+                        chart_data = {
+                        labels : labels,
+                        data : values,
+                        series : ['Temporary'],
+                        page_count : page_count
+                    };
+                }
             callback(chart_data);
             });    
         };
