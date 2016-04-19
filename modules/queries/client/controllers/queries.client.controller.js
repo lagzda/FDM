@@ -58,9 +58,9 @@ angular.module('queries').controller('QueriesController', ['$scope','$state', '$
         queryId: $stateParams.queryId
       });
     };
-    $scope.listItemClick = function($index) {
-        var clickedItem = $index;
-        $mdBottomSheet.hide(clickedItem);
+    $scope.listItemClick = function(query) {
+        var clickedItem = query;
+        $mdBottomSheet.hide(query);
     };  
   }
 ]);

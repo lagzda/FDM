@@ -93,7 +93,7 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
       Queries.save({user: user.id, query: tab, name: result}, function(results){
           
       })    
-      $scope.status = 'You decided to name your dog ' + result + '.';
+      notifications.showSuccess({message: 'The query has been successfully saved!'});
     }, function() {
       console.log("Didn't save");
     });
@@ -105,11 +105,13 @@ angular.module('articles').controller('ArticlesController', ['$scope','$state', 
         $scope.alert = '';
         console.log("WOOWOWOWOW");
         $mdBottomSheet.show({
-        template: '<md-bottom-sheet ng-init="find()" class="md-grid md-has-header"><md-subheader>Select query</md-subheader><md-list><md-list-item ng-repeat="query in queries"><md-button class="md-grid-item-content" ng-click="listItemClick($index)"><div class="md-grid-text"> {{ query.name }} </div></md-button></md-list-item></md-list></md-bottom-sheet>',          
+        template: '<md-bottom-sheet ng-init="find()" class="md-grid md-has-header"><md-subheader>Select query</md-subheader><md-list><md-list-item ng-repeat="query in queries"><md-button class="md-grid-item-content" ng-click="listItemClick(query)"><div class="md-grid-text"> {{ query.name }} </div></md-button></md-list-item></md-list></md-bottom-sheet>',          
         controller: 'QueriesController',
           clickOutsideToClose: false
         }).then(function(clickedItem) {
-          console.log("done");
+            $scope.add_tab();
+            $scope.tabs['tab'+Object.keys($scope.tabs).length]=clickedItem.query;
+            console.log(clickedItem);
         });
       };
       
